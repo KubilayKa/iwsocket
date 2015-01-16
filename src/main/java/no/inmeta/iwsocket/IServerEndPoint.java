@@ -13,6 +13,7 @@ import javax.websocket.server.ServerEndpoint;
 public class IServerEndPoint {
     @OnOpen
     public void onOpen(Session session) {
+        System.out.println("opened");
 
     }
     @OnClose
@@ -20,5 +21,6 @@ public class IServerEndPoint {
 
     }
     @OnMessage
-    public String onMessaege(String string,Session session) {return string;}
+    public String onMessaege(String string,Session session) {
+        System.out.println(  string + " recieved sending to client This is from server");return "This is from server";}
 }
