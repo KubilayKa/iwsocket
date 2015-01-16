@@ -8,6 +8,7 @@ import javax.websocket.server.ServerEndpoint;
  */
 @ServerEndpoint("/inbound")
 public class IServerEndPoint {
+
     @OnOpen
     public void onOpen(Session session) {
         System.out.println("opened");
