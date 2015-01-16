@@ -9,6 +9,7 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
 
+
     <dependencies>
         <dependency>
             <groupId>javax.websocket</groupId>
@@ -25,7 +26,8 @@
             <configuration>
                 <app>target/IWSocket-1.0-SNAPSHOT.war</app>
                 <port>8080</port>
-                <contextRoot>src/main/webapp</contextRoot>
+                <contextRoot>/</contextRoot>
+
             </configuration>
             <executions>
                 <execution>
@@ -35,6 +37,18 @@
                     </goals>
                 </execution>
             </executions>
+            <dependencies>
+                <dependency>
+                    <groupId>org.glassfish.main</groupId>
+                    <artifactId>simple-glassfish-api</artifactId>
+                    <version>4.0-b72</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.glassfish.main.extras</groupId>
+                    <artifactId>glassfish-embedded-all</artifactId>
+                    <version>4.0</version>
+                </dependency>
+            </dependencies>
         </plugin>
     </plugins>
 
