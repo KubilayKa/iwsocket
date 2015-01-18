@@ -15,12 +15,12 @@ public class IServerEndPoint {
     @OnOpen
     public void onOpen(Session session) {
         System.out.println("opened");
-        session.getUserProperties().put("chatroom","chatroom");
+         session.getUserProperties().put("chatroom","chatroom");
 
     }
     @OnClose
     public void onClose(Session session) {
-
+        System.out.println("closed :/");
     }
     @OnMessage
     public void onMessaege(String string,Session session) {
