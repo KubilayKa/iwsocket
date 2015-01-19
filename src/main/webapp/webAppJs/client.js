@@ -1,4 +1,7 @@
 {
+    var counter;
+    var counterL;
+    var counterR;
 function screenResize() {
    var height= $(document).height();
    var width= $(document).width();
@@ -14,15 +17,16 @@ function screenResize() {
     $('#counterTdL').css({"width":width/3 });
     $('#counterTdC').css({"width":width/3});
     $('#counterTdR').css({"width":width/3 });
-    var counter= $('.counter').FlipClock(000,{clockFace:'MinuteCounter',countdown:"true"});
+      counter= $('.counter').FlipClock(000,{clockFace:'MinuteCounter',countdown:"true"});
 
-    var counterL= $('.counterL').FlipClock({clockFace:'Counter' });
-    var counterR= $('.counterR').FlipClock(000,{clockFace:'Counter' });
+  counterL= $('.counterL').FlipClock({clockFace:'Counter' });
+     counterR= $('.counterR').FlipClock(000,{clockFace:'Counter' });
 
 
 }
 function sendMessage(){
     var txt2snd=$("#messageText").val();
+
     var ws = new WebSocket("ws://localhost:8080/target/inbound");
     ws.onopen = function()
     {
@@ -31,6 +35,7 @@ function sendMessage(){
     };
     ws.onmessage = function (evt)
     {
+        counterL.increment();
         var received_msg = evt.data;
         $("#messageLog").append(received_msg + "\n");
     };
