@@ -12,10 +12,16 @@ import java.io.IOException;
  */
 @ServerEndpoint("/inbound")
 public class IServerEndPoint {
+
     @OnOpen
     public void onOpen(Session session) {
         System.out.println("opened");
+
+for(Session s:session.getOpenSessions()){
+    System.out.println(s.getId());
+}
          session.getUserProperties().put("chatroom","chatroom");
+
 
     }
     @OnClose

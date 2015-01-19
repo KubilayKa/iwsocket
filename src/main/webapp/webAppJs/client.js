@@ -2,7 +2,24 @@
     var counter;
     var counterL;
     var counterR;
-function screenResize() {
+    var ws = new WebSocket("ws://localhost:8080/target/inbound");
+    ws.onopen = function()
+    {
+        // Web Socket is connected, send data using send()
+        ws.send(txt2snd);
+    };
+    ws.onmessage = function (evt)
+    {
+        counterL.increment();
+        var received_msg = evt.data;
+        $("#messageLog").append(received_msg + "\n");
+    };
+    ws.onclose = function()
+    {
+        // websocket is closed.
+    };
+
+    function screenResize() {
    var height= $(document).height();
    var width= $(document).width();
     console.log("size " + height + " : "+width);
@@ -26,23 +43,7 @@ function screenResize() {
 }
 function sendMessage(){
     var txt2snd=$("#messageText").val();
-
-    var ws = new WebSocket("ws://localhost:8080/target/inbound");
-    ws.onopen = function()
-    {
-        // Web Socket is connected, send data using send()
-        ws.send(txt2snd);
-    };
-    ws.onmessage = function (evt)
-    {
-        counterL.increment();
-        var received_msg = evt.data;
-        $("#messageLog").append(received_msg + "\n");
-    };
-    ws.onclose = function()
-    {
-        // websocket is closed.
-    };
+ws.send(txt2snd);
 
 
 }}
