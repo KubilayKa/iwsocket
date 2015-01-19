@@ -8,11 +8,17 @@ function screenResize() {
     $('#player2').css( {"width":((width-50)/2),"height":( height-50) })
     $('#vs').css( {"width":( width/6),"height":( height/3),
         "left": (width/2) -(width/10),"top":(height/10)})  ;
-    $('#table').css( {"width":( width/4),"height":( height/3),
-        "left": (width/2) -(width/7),"top":(height/2)})  ;
+    $('#table').css( {"width":( width ),"height":( height/3) })  ;
     $('#vsImage').css( {"width":"100%","height":"100%"})
     $('.playerImg').css({"width":(width-50)/4,"height":(height/2),"marginLeft":(width-50)/9})
-    var counter= $('.counter').FlipClock(200,{clockFace:'MinuteCounter',countdown:"true"});
+    $('#counterTdL').css({"width":width/3 });
+    $('#counterTdC').css({"width":width/3});
+    $('#counterTdR').css({"width":width/3 });
+    var counter= $('.counter').FlipClock(000,{clockFace:'MinuteCounter',countdown:"true"});
+
+    var counterL= $('.counterL').FlipClock({clockFace:'Counter' });
+    var counterR= $('.counterR').FlipClock(000,{clockFace:'Counter' });
+
 
 }
 function sendMessage(){
