@@ -5,9 +5,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.inmeta.iwsocket</groupId>
-    <artifactId>IWSocket</artifactId>
+    <artifactId>iwSocket</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
+
 
 
     <dependencies>
@@ -18,13 +19,13 @@
         </dependency>
     </dependencies>
  <build>
+     <finalName>iwsocket</finalName>
     <plugins>
         <plugin>
             <groupId>org.glassfish</groupId>
             <artifactId>maven-embedded-glassfish-plugin</artifactId>
             <version>3.1.1</version>
             <configuration>
-                <app>target/IWSocket-1.0-SNAPSHOT.war</app>
                 <port>8080</port>
                 <contextRoot>/</contextRoot>
 

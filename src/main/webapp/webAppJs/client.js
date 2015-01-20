@@ -2,16 +2,27 @@
     var counter;
     var counterL;
     var counterR;
-    var ws = new WebSocket("ws://localhost:8080/target/inbound");
+    var ws = new WebSocket("ws://localhost:8080/iwsocket/inbound");
     ws.onopen = function()
     {
         // Web Socket is connected, send data using send()
-        ws.send(txt2snd);
+        ws.send("Browser says halooo");
     };
     ws.onmessage = function (evt)
     {
-        counterL.increment();
+
+
         var received_msg = evt.data;
+        if("inc" == received_msg) {
+            counterL.increment();
+            console.log(received_msg);
+        }else if("dec" == received_msg) {
+            console.log("Dec");
+            counterL.decrement();
+            console.log(received_msg);
+        }else {
+            console.log(received_msg);
+        }
         $("#messageLog").append(received_msg + "\n");
     };
     ws.onclose = function()
@@ -43,7 +54,7 @@
 }
 function sendMessage(){
     var txt2snd=$("#messageText").val();
-ws.send(txt2snd);
+    ws.send(txt2snd);
 
 
 }}
