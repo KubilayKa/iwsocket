@@ -22,13 +22,15 @@
             counterL.decrement();
             console.log(received_msg);
         }else if("stats" == received_msg){
-            if($('#leftDrawer').width() > 10){
+            if($('#leftDrawer').width() > 50){
 
-                $('#leftDrawer').css({"width":((width-50)/2),"height":( height-50)  }).animate({width:'0px',visibility:"hidden" })
+                $('#leftDrawer').css({"width":((width-150)/3),"height":( height-50)  }).animate({width:'0px',visibility:"hidden" },"slow");
+                $('.drawerName').css({"visibility":"hidden"});
                 console.log("visible")
             }else {
 
-                $('#leftDrawer').css({"width":((width-50)/2),"height":( height-50),"visibility":"visible"  }).animate({width:width/2})
+                $('#leftDrawer').css({"width":((width-150)/3),"height":( height-50),"visibility":"visible"  }).animate({width:width/3},"slow")
+                $('.drawerName').css({"visibility":"visible","color":"white","marginLeft":(width-150)/7});
                 console.log("not visible")
             }
             console.log(received_msg);
