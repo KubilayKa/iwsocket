@@ -36,6 +36,17 @@ body {
     display:inline-block;
 
 }
+#leftDrawer{
+    background-color: #000000 ;opacity: .5;
+    position: absolute;
+
+    }
+#rightDrawer{
+    background-color: #000000 ;opacity: .5;
+
+    }
+
+
 
 .playerName {
     text-align: center;
@@ -72,11 +83,12 @@ body {
     bottom: 5%;
  }
 .counter{
-margin-left: 3%;
+margin-left: 5%;
     bottom: 5%;
 }
 .counterR{
 margin-left: 2%;
     bottom: 5%;
 }
+
 
