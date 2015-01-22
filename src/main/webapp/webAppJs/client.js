@@ -4,10 +4,13 @@
     var counterL;
     var counterR;
     var ws = new WebSocket("ws://localhost:8080/iwsocket/inbound");
+
+
     ws.onopen = function()
     {
         // Web Socket is connected, send data using send()
         ws.send("Browser says halooo");
+
     };
     ws.onmessage = function (evt)
     {
@@ -22,6 +25,7 @@
             counterL.decrement();
             console.log(received_msg);
         }else if("stats" == received_msg){
+            console.log("sibu")
             if($('#leftDrawer').width() > 50){
 
                 $('#leftDrawer').css({"width":((width-150)/3),"height":( height-50)  }).animate({width:'0px',visibility:"hidden" },"slow");

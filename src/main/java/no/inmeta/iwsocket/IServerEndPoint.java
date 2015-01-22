@@ -12,7 +12,7 @@ import java.io.IOException;
  */
 @ServerEndpoint("/inbound")
 public class IServerEndPoint {
-
+    private StaticList staticList = StaticList.getInstance();
     @OnOpen
     public void onOpen(Session session) {
         System.out.println("opened");
@@ -20,6 +20,7 @@ public class IServerEndPoint {
 for(Session s:session.getOpenSessions()){
     System.out.println(s.getId());
 }
+
          session.getUserProperties().put("chatroom","chatroom");
 
 
@@ -32,6 +33,7 @@ for(Session s:session.getOpenSessions()){
     public void onMessaege(String string,Session session) {
         System.out.println(  string + " recieved sending to client This is from server size : "  );
         String room = (String) session.getUserProperties().get("chatroom");
+
         try {
             for (Session s : session.getOpenSessions()) {
                 if (s.isOpen()
