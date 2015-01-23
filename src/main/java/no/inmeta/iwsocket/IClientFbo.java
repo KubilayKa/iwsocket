@@ -12,13 +12,26 @@ public class IClientFbo {
     private String clientManager;
     private String roomId;
     private String gameType;
+    private String firstPlayer;
+    private String opponent;
+    private String mainClientManager;
+
+    public String getFirstPlayer() {
+        return firstPlayer;
+    }
+
+    public  IClientFbo setFirstPlayer(String firstPlayer) {
+        this.firstPlayer = firstPlayer;
+        return this;
+    }
 
     public String getGameType() {
         return gameType;
     }
 
-    public void setGameType(String gameType) {
+    public IClientFbo setGameType(String gameType) {
         this.gameType = gameType;
+        return this;
     }
 
     public String getRoomId() {
@@ -64,4 +77,18 @@ public class IClientFbo {
     public IClientFbo setClientManager(String clientManager) {
         this.clientManager = clientManager;
     return this;}
+
+    public IClientFbo setOpponent(String opponent) {
+        this.opponent = opponent;
+        return this;
+    }
+
+    public String getOpponent() {
+        return opponent;
+    }
+
+    public IClientFbo setMainClientManager(String mainClientManager) {
+        this.mainClientManager = mainClientManager;
+        return this;
+    }
 }

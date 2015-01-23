@@ -1,3 +1,4 @@
+
 {  var height= $(document).height();
     var width= $(document).width();
     var counter;
@@ -9,15 +10,15 @@
     ws.onopen = function()
     {
         // Web Socket is connected, send data using send()
-        ws.send("Browser says halooo");
+        var url=location.href;
+
+        ws.send("mainClientManager:"+url.split("?")[1]);
 
     };
     ws.onmessage = function (evt)
     {
-
-
         var received_msg = evt.data;
-        if("inc" == received_msg) {
+         if("inc" == received_msg) {
             counterL.increment();
             console.log(received_msg);
         }else if("dec" == received_msg) {
@@ -64,7 +65,6 @@
      counter= $('.counter').FlipClock(000,{clockFace:'MinuteCounter',countdown:"true"});
      counterL= $('.counterL').FlipClock({clockFace:'Counter' });
      counterR= $('.counterR').FlipClock(000,{clockFace:'Counter' });
-
 
 }
 function sendMessage(){
