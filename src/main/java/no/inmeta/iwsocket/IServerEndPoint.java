@@ -12,10 +12,11 @@ import java.io.IOException;
  */
 @ServerEndpoint("/inbound")
 public class IServerEndPoint {
-    private StaticList staticList = StaticList.getInstance();
+    private ISocketConnectionManager iSocketConnectionManager = ISocketConnectionManager.getIstance();
     @OnOpen
     public void onOpen(Session session) {
         System.out.println("opened");
+
 
 for(Session s:session.getOpenSessions()){
     System.out.println(s.getId());
@@ -31,9 +32,17 @@ for(Session s:session.getOpenSessions()){
     }
     @OnMessage
     public void onMessaege(String string,Session session) {
-        System.out.println(  string + " recieved sending to client This is from server size : "  );
-        String room = (String) session.getUserProperties().get("chatroom");
 
+        System.out.println(  string + " recieved sending to client This is from server size : "  );
+         String room = (String) session.getUserProperties().get("chatroom");
+
+
+         if (null ==iSocketConnectionManager.getClientFboBySid(session.getId())){
+            iSocketConnectionManager.addSession(session.getId(), new IClientFbo().setSession(session));
+
+         }else {
+
+         }
         try {
             for (Session s : session.getOpenSessions()) {
                 if (s.isOpen()
