@@ -15,7 +15,7 @@
     var firstPlayer=paramsAndVal[0];
     var secondPlayer= paramsAndVal[1];
 
-    var ws = new WebSocket("ws://localhost:8080/iwsocket/inbound/{bc}/{ikkebc}");
+    var ws = new WebSocket("ws://localhost:8080/iwsocket/inbound/browserClient/"+firstPlayer+"/"+secondPlayer);
 
 
     ws.onopen = function()

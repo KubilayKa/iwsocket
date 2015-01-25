@@ -18,10 +18,10 @@ public class ISocketConnectionManager {
     private final Map<String,IClientFbo> list=new HashMap<>();
     private final Map<String,String[]> roomList =new HashMap<>();
 
-    public void initRoom(String sId, String roomid ){
+    public void initRoom(String sIdf,  String roomid ){
         //list.put(sId,iClientFbo);
 
-        roomList.put(roomid,new String[]{sId,null,null});
+        roomList.put(roomid,new String[]{sIdf,null,null});
     }
 
 
@@ -74,6 +74,7 @@ public Logger getLogger() {
 
         return roomList.get(s);
     }
+
 
     public boolean isRgstrdToRoom(String id) {
         for (String roomName:roomList.keySet()){
