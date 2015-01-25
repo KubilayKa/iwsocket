@@ -8,12 +8,12 @@
     var url =location.href;
     var paramRaw=url.split("?");
     if ("undefined"===paramRaw|| paramRaw.length==1){
-        paramRaw=["","userAgent=main&room=main"];
+        paramRaw=["","userAgent=browserClient&first=main&second=main"];
     }
-    var roomName=paramRaw[1].replace("userAgent=","").replace("room=","");
+    var roomName=paramRaw[1].replace("userAgent=","").replace("first=","").replace("second=","");
     var paramsAndVal=roomName.split("&");
-    var firstPlayer=paramsAndVal[0];
-    var secondPlayer= paramsAndVal[1];
+    var firstPlayer=paramsAndVal[1];
+    var secondPlayer= paramsAndVal[2];
 
     var ws = new WebSocket("ws://localhost:8080/iwsocket/inbound/browserClient/"+firstPlayer+"/"+secondPlayer);
 
@@ -29,6 +29,7 @@
     ws.onmessage = function (evt)
     {
         var received_msg = evt.data;
+        console.log(received_msg +" recieved...")
          if("inc" == received_msg) {
             counterL.increment();
             console.log(received_msg);

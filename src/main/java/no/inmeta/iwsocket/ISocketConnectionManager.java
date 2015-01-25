@@ -24,11 +24,13 @@ public class ISocketConnectionManager {
         roomList.put(roomid,new String[]{sIdf,null,null});
     }
 
-
-
-    public void addRoom(String roomName,String [] sessionIds){
-        roomList.put(roomName,sessionIds);
-    }
+   public boolean isRoomExists(String playerName){
+     for (String s:roomList.keySet()){
+         if (s.contains(playerName))
+             return true;
+     }
+       return false;
+   }
     public void updateRoom(String roomName,String sessionId,String type){
         if (type.equals("addMc")){
 
