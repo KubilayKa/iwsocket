@@ -16,7 +16,7 @@ public class ISocketConnectionManager {
     private final Logger logger = Logger.getLogger("AISCLI");
     private ISocketConnectionManager(){}
     private final Map<String,IClientFbo> list=new HashMap<>();
-    private final Map<String,String[]> roomList =new HashMap<>();
+    private   Map<String,String[]> roomList =new HashMap<>();
 
     public void initRoom(String sIdf,  String roomid ){
         //list.put(sId,iClientFbo);
@@ -24,7 +24,15 @@ public class ISocketConnectionManager {
         roomList.put(roomid,new String[]{sIdf,null,null});
     }
 
-   public boolean isRoomExists(String playerName){
+    public Map<String, String[]> getRoomList() {
+        return roomList;
+    }
+
+    public void setRoomList(Map<String, String[]> roomList) {
+        this.roomList = roomList;
+    }
+
+    public boolean isRoomExists(String playerName){
      for (String s:roomList.keySet()){
          if (s.contains(playerName))
              return true;

@@ -6,14 +6,15 @@
     var counterR;
 
     var url =location.href;
-    var paramRaw=url.split("?");
+    var paramRaw=url.split(":)");
     if ("undefined"===paramRaw|| paramRaw.length==1){
-        paramRaw=["","userAgent=browserClient&first=main&second=main"];
+        paramRaw=["","main&main"]
+        //paramRaw=["","userAgent=browserClient&first=main&second=main"];
     }
-    var roomName=paramRaw[1].replace("userAgent=","").replace("first=","").replace("second=","");
-    var paramsAndVal=roomName.split("&");
-    var firstPlayer=paramsAndVal[1];
-    var secondPlayer= paramsAndVal[2];
+  //  var roomName=paramRaw[1].replace("userAgent=","").replace("first=","").replace("second=","");
+    var paramsAndVal=paramRaw[1].split("&");
+    var firstPlayer=paramsAndVal[0];
+    var secondPlayer= paramsAndVal[1];
 
     var ws = new WebSocket("ws://localhost:8080/iwsocket/inbound/browserClient/"+firstPlayer+"/"+secondPlayer);
 
@@ -78,6 +79,9 @@
      counterL= $('.counterL').FlipClock({clockFace:'Counter' });
      counterR= $('.counterR').FlipClock(000,{clockFace:'Counter' });
 
+}
+   function clearClients(){
+    ws.send("clear")
 }
 function sendMessage(){
     var txt2snd=$("#messageText").val();

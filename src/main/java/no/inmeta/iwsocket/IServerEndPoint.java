@@ -6,7 +6,9 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -19,7 +21,7 @@ public class IServerEndPoint {
     private Logger logger = iSocketConnectionManager.getLogger();
 
     @OnOpen
-    public void onOpen(Session session) {
+    public void onOpen(Session session) throws IOException {
 
         //  session.getUserProperties().put("chatroom","chatroom");
 
@@ -28,24 +30,32 @@ public class IServerEndPoint {
         String firstPlayer = pathPrm.get("first");
         String secondPlayer = pathPrm.get("second");
 
-        String roomId = firstPlayer + secondPlayer  ;
+        String roomId = firstPlayer +"&"+ secondPlayer  ;
         String sessionId = session.getId();
         if (firstPlayer.equals("main")) return;
         if (pathPrm.get("userAgent").contains("androidClient")) {
              if (iSocketConnectionManager.isRoomExists(firstPlayer)){
                  iSocketConnectionManager.updateRoom(roomId,sessionId,"addMc");
              }else {
-                 iSocketConnectionManager.initRoom(firstPlayer,roomId);
+                 iSocketConnectionManager.initRoom(sessionId,roomId);
+
              }
+            session.getBasicRemote().sendText("popup");
         } else {
-                iSocketConnectionManager.updateRoom(roomId,sessionId,"addBc");
+
+            Set<Session> openSessions = session.getOpenSessions();
+            String[] roomMembers=iSocketConnectionManager.getRoomById(roomId);
+            for (String ss:roomMembers){
+                for (Session s:openSessions) {
+                        if (ss.equals(s.getId()))
+                            s.getBasicRemote().sendText("xpopup");
+
+                }
+            }
+            iSocketConnectionManager.updateRoom(roomId, sessionId, "addBc");
         }
         session.getUserProperties().put("roomName", roomId);
-      /*  String rm = "";
-        String[] splitedString = string.split(":");
-        if (!  iSocketConnectionManager.isRgstrdToRoom(session.getId()))
-        rm = splitedString[1] + splitedString[2];
-*/
+
         logger.log(Level.WARNING, "opened");
     }
 
@@ -58,7 +68,8 @@ public class IServerEndPoint {
     public void onMessaege(String string, Session session) throws IOException {
 
         System.out.println(string + " recieved sending to client This is from server size : ");
-
+if (string.equals("clear"))
+    iSocketConnectionManager.setRoomList(new HashMap<String, String[]>());
 //registret client handle message
            String rId = (String) session.getUserProperties().get("roomName");
        try {
