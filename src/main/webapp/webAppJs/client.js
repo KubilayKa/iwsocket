@@ -4,7 +4,18 @@
     var counter;
     var counterL;
     var counterR;
-    var ws = new WebSocket("ws://localhost:8080/iwsocket/inbound");
+
+    var url =location.href;
+    var paramRaw=url.split("?");
+    if ("undefined"===paramRaw|| paramRaw.length==1){
+        paramRaw=["","userAgent=main&room=main"];
+    }
+    var roomName=paramRaw[1].replace("userAgent=","").replace("room=","");
+    var paramsAndVal=roomName.split("&");
+    var firstPlayer=paramsAndVal[0];
+    var secondPlayer= paramsAndVal[1];
+
+    var ws = new WebSocket("ws://localhost:8080/iwsocket/inbound/{bc}/{ikkebc}");
 
 
     ws.onopen = function()
@@ -12,7 +23,7 @@
         // Web Socket is connected, send data using send()
         var url=location.href;
 
-        ws.send("mainClientManager:"+url.split("?")[1]);
+        ws.send("bc:"+url.split("?")[1]);
 
     };
     ws.onmessage = function (evt)

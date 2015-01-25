@@ -4,6 +4,7 @@ import javax.websocket.Session;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
 /**
  * Created by K on 1/23/15.
@@ -12,25 +13,19 @@ public class ISocketConnectionManager {
 
 
 
-    private Session mainClient;
-
+    private final Logger logger = Logger.getLogger("AISCLI");
     private ISocketConnectionManager(){}
     private final Map<String,IClientFbo> list=new HashMap<>();
     private final Map<String,String[]> roomList =new HashMap<>();
 
-    public void addSession(String sId,String roomid){
+    public void initRoom(String sId, String roomid ){
         //list.put(sId,iClientFbo);
+
         roomList.put(roomid,new String[]{sId,null,null});
     }
 
-    public void setMainClient(Session mainClient) {
-        this.mainClient = mainClient;
-    }
 
-    public void removeRoom(){
-        removeSessions();
 
-    }
     public void addRoom(String roomName,String [] sessionIds){
         roomList.put(roomName,sessionIds);
     }
@@ -51,10 +46,9 @@ public class ISocketConnectionManager {
         }
 
     }
-    private void removeSessions(){}
-    public IClientFbo getClientFboBySid(String sId) {
-        return list.get(sId);
-    }
+public Logger getLogger() {
+    return logger;
+}
     public void handleMessage(Session session,String msg) {
         //TODO: sjekk om mc eller bc rediger til om den har ikke rom dediser et rom
         //TODO: legg inn logikk f
@@ -74,8 +68,23 @@ public class ISocketConnectionManager {
         return roomList.keySet();
     }
 
-    public Session getMainClient() {
 
-        return mainClient;
+
+    public String[] getRoomById(String s) {
+
+        return roomList.get(s);
     }
+
+    public boolean isRgstrdToRoom(String id) {
+        for (String roomName:roomList.keySet()){
+             String[] sessionArr=roomList.get(roomName);
+             for(String sessionId:sessionArr){
+                 if (sessionId.equals(id))
+                     return true;
+             }
+        }
+        return false;
+    }
+
+
 }

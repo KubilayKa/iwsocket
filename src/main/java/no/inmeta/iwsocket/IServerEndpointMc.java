@@ -11,10 +11,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Created by K on 1/16/15.
+ * Created by K on 1/24/15.
  */
-@ServerEndpoint(value = "/inbound/{userAgent}/{room}" )
-public class IServerEndPoint {
+@ServerEndpoint("/inboundy")
+public class IServerEndpointMc {
     private ISocketConnectionManager iSocketConnectionManager = ISocketConnectionManager.getIstance();
     private Logger logger = iSocketConnectionManager.getLogger();
     @OnOpen
@@ -25,7 +25,12 @@ public class IServerEndPoint {
         Map<String, Object> upr = session.getUserProperties();
         Map<String, String> pathPrm = session.getPathParameters();
 
-        logger.log(Level.WARNING, "opened" );
+        logger.log(Level.WARNING, "opened inboundy" );
+        try {
+            session.getBasicRemote().sendText("u re connected");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @OnClose
@@ -34,7 +39,11 @@ public class IServerEndPoint {
     }
 
     @OnMessage
-    public void onMessaege(String string, Session session) throws IOException {
+    public void onMessage(byte[]msg,Session session){
+        System.out.println("");
+    }
+     @OnMessage
+     public void onMessaege(String string, Session session) throws IOException {
 
         System.out.println(string + " recieved sending to client This is from server size : ");
 
@@ -51,13 +60,14 @@ public class IServerEndPoint {
        try {
             for (Session s : session.getOpenSessions()) {
                 if (s.isOpen()
-                        && room.equals(s.getUserProperties().get("chatroom"))) {
+                        && room.equals(s.getUserPr
+                        operties().get("chatroom"))) {
                     s.getBasicRemote().sendText(string);
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }*/
-        }
+    }
 
 }
