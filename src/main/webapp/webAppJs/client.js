@@ -17,15 +17,11 @@
     var secondPlayer= paramsAndVal[1];
 
     var ws = new WebSocket("ws://localhost:8080/iwsocket/inbound/browserClient/"+firstPlayer+"/"+secondPlayer);
-
-
     ws.onopen = function()
     {
         // Web Socket is connected, send data using send()
         var url=location.href;
-
         ws.send("bc:"+url.split("?")[1]);
-
     };
     ws.onmessage = function (evt)
     {
@@ -68,17 +64,20 @@
     $('#vs').css( {"width":( width/6),"height":( height/3),
         "left": (width/2) -(width/10),"top":(height/10)})  ;
     $('#table').css( {"width":( width ),"height":( height/3) })  ;
-    $('#vsImage').css( {"width":"100%","height":"100%"})
-    $('.playerImg').css({"width":(width-50)/4,"height":(height/2),"marginLeft":(width-50)/9})
-    $('#counterTdL').css({"width":width/3 });
-    $('#counterTdC').css({"width":width/3});
-    $('#counterTdR').css({"width":width/3 });
+        $('#vsImage').css( {"width":"100%","height":"100%"})
+        $('.playerImg').css({"width":(width-50)/4,"height":(height/2),"marginLeft":(width-50)/9})
 
 
      counter= $('.counter').FlipClock(000,{clockFace:'MinuteCounter',countdown:"true"});
      counterL= $('.counterL').FlipClock({clockFace:'Counter' });
      counterR= $('.counterR').FlipClock(000,{clockFace:'Counter' });
-
+        var pad=((width-50)/2)/4;
+        var centerPad=pad + ( $('.flip').width()*2);
+       console.log(pad)
+        $('.counterL').css({"left":pad});
+        $('.counterR').css({"left":pad});
+        $('.counter').css({"left":centerPad})
+        counter.createDivider("",0)
 }
    function clearClients(){
     ws.send("clear")
