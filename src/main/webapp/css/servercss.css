@@ -85,7 +85,13 @@ body {
     text-align: center;
 }
 #counterTdC{
-
+    position: absolute;
+    }
+.flip-clock-label {
+     visibility: hidden;
+    }
+.flip-clock-divider  {
+    visibility: hidden;
     }
 
 

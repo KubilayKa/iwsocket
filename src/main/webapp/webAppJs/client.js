@@ -64,20 +64,23 @@
     $('#vs').css( {"width":( width/6),"height":( height/3),
         "left": (width/2) -(width/10),"top":(height/10)})  ;
     $('#table').css( {"width":( width ),"height":( height/3) })  ;
-        $('#vsImage').css( {"width":"100%","height":"100%"})
-        $('.playerImg').css({"width":(width-50)/4,"height":(height/2),"marginLeft":(width-50)/9})
+    $('#vsImage').css( {"width":"100%","height":"100%"})
+    $('.playerImg').css({"width":(width-50)/4,"height":(height/2),"marginLeft":(width-50)/9})
 
 
-     counter= $('.counter').FlipClock(000,{clockFace:'MinuteCounter',countdown:"true"});
+     counter= $('.counter').FlipClock(000,{clockFace:'MinuteCounter',countdown:"true",hideLabels:"true" });
      counterL= $('.counterL').FlipClock({clockFace:'Counter' });
-     counterR= $('.counterR').FlipClock(000,{clockFace:'Counter' });
-        var pad=((width-50)/2)/4;
-        var centerPad=pad + ( $('.flip').width()*2);
-       console.log(pad)
-        $('.counterL').css({"left":pad});
-        $('.counterR').css({"left":pad});
-        $('.counter').css({"left":centerPad})
-        counter.createDivider("",0)
+     counterR = $('.counterR').FlipClock(000, {clockFace: 'Counter' });
+     var fCSize= $('.flip-clock-wrapper').width();
+     var pad=((width-50)/2)/4;
+     var centerPad=((width-fCSize)/2)+20;
+
+     console.log(pad)
+     $('.counterL').css({"left":pad});
+     $('.counterR').css({"left":pad});
+     $('.counter').css({"left":centerPad})
+
+   $('#counterTdC').css({"top":height-200})
 }
    function clearClients(){
     ws.send("clear")

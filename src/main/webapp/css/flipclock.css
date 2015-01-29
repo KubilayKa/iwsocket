@@ -45,11 +45,11 @@
     position: relative;
     float: left;
     margin: 10px;
-    width: 180px;
-    height: 180px;
-    font-size: 170px;
+    width: 160px;
+    height: 160px;
+    font-size: 150px;
     font-weight: bold;
-    line-height: 180px;
+    line-height: 170px;
     border-radius: 6px;
     background: #000;
 
@@ -90,7 +90,7 @@
 .flip-clock-wrapper ul li a div.up:after {
     content: "";
     position: absolute;
-    top: 85px;
+    top: 75px;
     left: 0;
     z-index: 5;
     width: 100%;
