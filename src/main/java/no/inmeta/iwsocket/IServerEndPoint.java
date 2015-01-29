@@ -30,25 +30,25 @@ public class IServerEndPoint {
         String firstPlayer = pathPrm.get("first");
         String secondPlayer = pathPrm.get("second");
 
-        String roomId = firstPlayer +"&"+ secondPlayer  ;
+        String roomId = firstPlayer + "&" + secondPlayer;
         String sessionId = session.getId();
         if (firstPlayer.equals("main")) return;
         if (pathPrm.get("userAgent").contains("androidClient")) {
-             if (iSocketConnectionManager.isRoomExists(firstPlayer)){
-                 iSocketConnectionManager.updateRoom(roomId,sessionId,"addMc");
-             }else {
-                 iSocketConnectionManager.initRoom(sessionId,roomId);
+            if (iSocketConnectionManager.isRoomExists(firstPlayer)) {
+                iSocketConnectionManager.updateRoom(roomId, sessionId, "addMc");
+            } else {
+                iSocketConnectionManager.initRoom(sessionId, roomId);
 
-             }
+            }
             session.getBasicRemote().sendText("popup");
         } else {
 
             Set<Session> openSessions = session.getOpenSessions();
-            String[] roomMembers=iSocketConnectionManager.getRoomById(roomId);
-            for (String ss:roomMembers){
-                for (Session s:openSessions) {
-                        if (ss.equals(s.getId()))
-                            s.getBasicRemote().sendText("xpopup");
+            String[] roomMembers = iSocketConnectionManager.getRoomById(roomId);
+            for (String ss : roomMembers) {
+                for (Session s : openSessions) {
+                    if (ss.equals(s.getId()))
+                        s.getBasicRemote().sendText("xpopup");
 
                 }
             }
@@ -68,11 +68,23 @@ public class IServerEndPoint {
     public void onMessaege(String string, Session session) throws IOException {
 
         System.out.println(string + " recieved sending to client This is from server size : ");
-if (string.equals("clear"))
-    iSocketConnectionManager.setRoomList(new HashMap<String, String[]>());
+        if (string.equals("clear")) {
+            iSocketConnectionManager.setRoomList(new HashMap<String, String[]>());
+        } else if (string.equals("clients")) {
+            Map<String, String[]> list = iSocketConnectionManager.getRoomList();
+            StringBuilder stringBuilder = new StringBuilder("clist");
+            for (String s : list.keySet()) {
+                String arr[] = list.get(s);
+                for (String ss : arr) {
+                    stringBuilder.append(ss + "\n");
+                }
+            }
+            session.getBasicRemote().sendText(stringBuilder.toString());
+        }
+
 //registret client handle message
-           String rId = (String) session.getUserProperties().get("roomName");
-       try {
+        String rId = (String) session.getUserProperties().get("roomName");
+        try {
             for (Session s : session.getOpenSessions()) {
                 if (s.isOpen()
                         && rId.equals(s.getUserProperties().get("roomName"))
@@ -81,7 +93,7 @@ if (string.equals("clear"))
                 }
             }
         } catch (IOException e) {
-             e.printStackTrace();
+            e.printStackTrace();
         } /* */
     }
 
