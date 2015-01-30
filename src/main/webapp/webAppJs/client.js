@@ -33,7 +33,6 @@
             counterL.decrement();
             console.log(received_msg);
         } else if ("stats" == received_msg) {
-            console.log("sibu")
             if ($('#leftDrawer').width() > 50) {
 
                 $('#leftDrawer').css({"width": ((width - 150) / 3), "height": ( height - 50)  }).animate({width: '0px', visibility: "hidden" }, "slow");
@@ -48,11 +47,13 @@
             console.log(received_msg);
         }else if(received_msg.indexOf("clist") > -1) {
             $('#clientsView').append(received_msg);
+        }else{
+            $("#messageLog").append(received_msg + "\n");
         }
-        $("#messageLog").append(received_msg + "\n");
     };
     ws.onclose = function () {
         // websocket is closed.
+        window.close();
     };
 
     function screenResize() {

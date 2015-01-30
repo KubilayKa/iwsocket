@@ -85,6 +85,6 @@ public class ISocketConnectionManager {
 
 
     public static void clearRoomList() {
-        roomList.clear();
+         roomList.clear();
     }
 }

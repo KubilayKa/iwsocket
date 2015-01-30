@@ -35,14 +35,14 @@ public class IServerEndPoint {
             } else {
                 iSocketConnectionManager.initRoom(sessionId, roomId);
             }
-            session.getBasicRemote().sendText("popup");
+            session.getBasicRemote().sendText("popup:"+roomId);
         } else {
             iSocketConnectionManager.updateRoom(roomId, sessionId, "addBc");
             Set<Session> openSessions = session.getOpenSessions();
             String[] roomMembers = iSocketConnectionManager.getRoomById(roomId);
             for (String ss : roomMembers) {
                 for (Session s : openSessions) {
-                    if (ss.equals(s.getId())) {
+                    if (ss.equals(s.getId())&& !session.getId().equals(ss)) {
                         s.getBasicRemote().sendText("xpopup");
                     }
 
@@ -55,7 +55,17 @@ public class IServerEndPoint {
 
     @OnClose
     public void onClose(Session session) {
-        System.out.println("closed :/");
+        String rId = (String) session.getUserProperties().get("roomName");
+        for (Session s : session.getOpenSessions()) {
+            if (s.isOpen()
+                    && rId.equals(s.getUserProperties().get("roomName"))) {
+                try {
+                    s.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     @OnMessage
