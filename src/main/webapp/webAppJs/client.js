@@ -53,7 +53,9 @@
     };
     ws.onclose = function () {
         // websocket is closed.
-        window.close();
+        console.log("før loc replace")
+        window.location.replace("");
+        console.log("after loc replace")
     };
 
     function screenResize() {

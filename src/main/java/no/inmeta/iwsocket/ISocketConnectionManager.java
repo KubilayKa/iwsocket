@@ -13,10 +13,9 @@ public class ISocketConnectionManager {
 
 
 
-    private final static Logger logger = Logger.getLogger("AISCLI");
+    private final  Logger logger = Logger.getLogger("AISCLI");
     private ISocketConnectionManager(){}
     private final Map<String,IClientFbo> list=new HashMap<>();
-    private  final static Map<String,String[]> roomList =new HashMap<>();
     public void initRoom(String sIdf,  String roomid ){
         //list.put(sId,iClientFbo);
 
@@ -25,16 +24,16 @@ public class ISocketConnectionManager {
     public static Map<String, String[]> getRoomList() {
         return roomList;
     }
-
-
-    public static boolean isRoomExists(String playerName){
+    public  boolean isRoomExists(String playerName){
      for (String s:roomList.keySet()){
          if (s.contains(playerName))
              return true;
      }
        return false;
    }
-    public static void updateRoom(String roomName,String sessionId,String type){
+
+
+    public  void updateRoom(String roomName,String sessionId,String type){
         if (type.equals("addMc")){
 
             roomList.get(roomName)[1]=sessionId;
@@ -51,7 +50,7 @@ public class ISocketConnectionManager {
         }
 
     }
-    public static Logger getLogger() {
+    public  Logger getLogger() {
     return logger;
 }
     public void handleMessage(Session session,String msg) {
@@ -59,20 +58,19 @@ public class ISocketConnectionManager {
         //TODO: legg inn logikk f
     }
     private final static ISocketConnectionManager iSocketConnectionManager = new ISocketConnectionManager();
+    private  final static Map<String,String[]> roomList =new HashMap<>();
     public static ISocketConnectionManager getIstance(){
         return iSocketConnectionManager;
 
     }
-    public static Set<String> getRoomNames() {
+    public   Set<String> getRoomNames() {
 
         return roomList.keySet();
     }
-    public static String[] getRoomById(String s) {
+    public   String[] getRoomById(String s) {
         return roomList.get(s);
     }
-
-
-    public static boolean isRgstrdToRoom(String id) {
+    public   boolean isRgstrdToRoom(String id) {
         for (String roomName:roomList.keySet()){
              String[] sessionArr=roomList.get(roomName);
              for(String sessionId:sessionArr){
@@ -84,7 +82,11 @@ public class ISocketConnectionManager {
     }
 
 
-    public static void clearRoomList() {
+    public   void clearRoomList() {
          roomList.clear();
+    }
+
+    public static void deleteRoom(String rId) {
+        roomList.remove(rId);
     }
 }
