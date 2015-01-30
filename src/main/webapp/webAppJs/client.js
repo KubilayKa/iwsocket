@@ -69,8 +69,9 @@
         $('#vsImage').css({"width": "100%", "height": "100%"})
         $('.playerImg').css({"width": (width - 50) / 4, "height": (height / 2), "marginLeft": (width - 50) / 9})
 
-
-        counter = $('.counter').FlipClock(000, {clockFace: 'MinuteCounter', countdown: "true", hideLabels: "true" });
+        var counterWidth= ((width - 100) / 4);
+        counter = $('.counter').FlipClock(000, {clockFace: 'MinuteCounter', countdown: "true", hideLabels: "true"
+            });
         counterL = $('.counterL').FlipClock({clockFace: 'Counter' });
         counterR = $('.counterR').FlipClock(000, {clockFace: 'Counter' });
         var fCSize = $('.flip-clock-wrapper').width();
