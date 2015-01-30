@@ -13,33 +13,28 @@ public class ISocketConnectionManager {
 
 
 
-    private final Logger logger = Logger.getLogger("AISCLI");
+    private final static Logger logger = Logger.getLogger("AISCLI");
     private ISocketConnectionManager(){}
     private final Map<String,IClientFbo> list=new HashMap<>();
-    private   Map<String,String[]> roomList =new HashMap<>();
-
+    private  final static Map<String,String[]> roomList =new HashMap<>();
     public void initRoom(String sIdf,  String roomid ){
         //list.put(sId,iClientFbo);
 
         roomList.put(roomid,new String[]{sIdf,null,null});
     }
-
-    public Map<String, String[]> getRoomList() {
+    public static Map<String, String[]> getRoomList() {
         return roomList;
     }
 
-    public void setRoomList(Map<String, String[]> roomList) {
-        this.roomList = roomList;
-    }
 
-    public boolean isRoomExists(String playerName){
+    public static boolean isRoomExists(String playerName){
      for (String s:roomList.keySet()){
          if (s.contains(playerName))
              return true;
      }
        return false;
    }
-    public void updateRoom(String roomName,String sessionId,String type){
+    public static void updateRoom(String roomName,String sessionId,String type){
         if (type.equals("addMc")){
 
             roomList.get(roomName)[1]=sessionId;
@@ -56,37 +51,28 @@ public class ISocketConnectionManager {
         }
 
     }
-public Logger getLogger() {
+    public static Logger getLogger() {
     return logger;
 }
     public void handleMessage(Session session,String msg) {
         //TODO: sjekk om mc eller bc rediger til om den har ikke rom dediser et rom
         //TODO: legg inn logikk f
-
-
     }
-
-
     private final static ISocketConnectionManager iSocketConnectionManager = new ISocketConnectionManager();
     public static ISocketConnectionManager getIstance(){
         return iSocketConnectionManager;
 
     }
-
-    public Set<String> getRoomNames() {
+    public static Set<String> getRoomNames() {
 
         return roomList.keySet();
     }
-
-
-
-    public String[] getRoomById(String s) {
-
+    public static String[] getRoomById(String s) {
         return roomList.get(s);
     }
 
 
-    public boolean isRgstrdToRoom(String id) {
+    public static boolean isRgstrdToRoom(String id) {
         for (String roomName:roomList.keySet()){
              String[] sessionArr=roomList.get(roomName);
              for(String sessionId:sessionArr){
@@ -98,4 +84,7 @@ public Logger getLogger() {
     }
 
 
+    public static void clearRoomList() {
+        roomList.clear();
+    }
 }
