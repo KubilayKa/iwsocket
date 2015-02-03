@@ -1,6 +1,7 @@
 {
     var height = $(document).height();
     var width = $(document).width();
+console.log("w:"+width+"h:"+height)
     var counter;
     var counterL;
     var counterR;
@@ -54,12 +55,10 @@
     ws.onclose = function () {
         // websocket is closed.
         console.log("før loc replace")
-        window.location.replace("");
         console.log("after loc replace")
     };
 
     function screenResize() {
-
         $('#pictureHolder').css({"width": width - 20, "height": height - 50})
         $('#player1').css({"width": ((width - 50) / 2), "height": ( height - 50)  })
         $('#player2').css({"width": ((width - 50) / 2), "height": ( height - 50) })
@@ -68,7 +67,6 @@
         $('#table').css({"width": ( width ), "height": ( height / 3) });
         $('#vsImage').css({"width": "100%", "height": "100%"})
         $('.playerImg').css({"width": (width - 50) / 4, "height": (height / 2), "marginLeft": (width - 50) / 9})
-
         var counterWidth= ((width - 100) / 4);
         counter = $('.counter').FlipClock(000, {clockFace: 'MinuteCounter', countdown: "true", hideLabels: "true"
             });
@@ -77,12 +75,9 @@
         var fCSize = $('.flip-clock-wrapper').width();
         var pad = ((width - 50) / 2) / 4;
         var centerPad = ((width - fCSize) / 2) + 20;
-
-        console.log(pad)
         $('.counterL').css({"left": pad});
         $('.counterR').css({"left": pad});
         $('.counter').css({"left": centerPad})
-
         $('#counterTdC').css({"top": height - 200})
     }
 

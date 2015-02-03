@@ -27,27 +27,30 @@ public class IServerEndPoint {
         String secondPlayer = pathPrm.get("second");
         String roomId = firstPlayer + "&" + secondPlayer;
         String sessionId = session.getId();
-        if (firstPlayer.equals("main")) {session.getUserProperties().put("roomName", firstPlayer); return;}
+        if (firstPlayer.equals("main")) {
+            session.getUserProperties().put("roomName", firstPlayer);
+            return;
+        }
         if (pathPrm.get("userAgent").contains("androidClient")) {
             if (iSocketConnectionManager.isRoomExists(firstPlayer)) {
-                roomId= secondPlayer +"&"+ firstPlayer;
+                roomId = secondPlayer + "&" + firstPlayer;
                 iSocketConnectionManager.updateRoom(roomId, sessionId, "addMc");
             } else {
                 iSocketConnectionManager.initRoom(sessionId, roomId);
             }
-            session.getBasicRemote().sendText("popup:"+roomId);
+            session.getBasicRemote().sendText("popup:" + roomId);
         } else {
             String[] roomMembers = iSocketConnectionManager.getRoomById(roomId);
-            if (null != roomMembers[0]||session.getId()!=roomMembers[2]){
+            if (null != roomMembers[0] || session.getId() != roomMembers[2]) {
 
                 iSocketConnectionManager.updateRoom(roomId, sessionId, "addBc");
-            }else {
+            } else {
                 return;
             }
             Set<Session> openSessions = session.getOpenSessions();
             for (String ss : roomMembers) {
                 for (Session s : openSessions) {
-                    if (ss.equals(s.getId())&& !session.getId().equals(ss)) {
+                    if (ss.equals(s.getId()) && !session.getId().equals(ss)) {
                         s.getBasicRemote().sendText("xpopup");
                     }
 
@@ -59,12 +62,12 @@ public class IServerEndPoint {
     }
 
     @OnClose
-    public void onClose(Session session) { 
+    public void onClose(Session session) {
         String rId = (String) session.getUserProperties().get("roomName");
-        String[] clients=iSocketConnectionManager.getRoomById(rId);
+        String[] clients = iSocketConnectionManager.getRoomById(rId);
         if (rId.equals("main")) {
             return;
-        }else if (!iSocketConnectionManager.isRgstrdToRoom(session.getId())){
+        } else if (!iSocketConnectionManager.isRgstrdToRoom(session.getId())) {
             return;
         }
         iSocketConnectionManager.deleteRoom(rId);
@@ -85,13 +88,13 @@ public class IServerEndPoint {
 
         if (string.equals("clear")) {
             String sessionRoomName = (String) session.getUserProperties().get("roomName");
-            String[] sessionIds=iSocketConnectionManager.getRoomById(sessionRoomName);
-            for (String sessionId:sessionIds){
+            String[] sessionIds = iSocketConnectionManager.getRoomById(sessionRoomName);
+            for (String sessionId : sessionIds) {
                 Set<Session> sessions = session.getOpenSessions();
-                for(Session s:sessions){
-                   if (s.isOpen()|| s.getId().equals(sessionId)){
-                       s.close();
-                   }
+                for (Session s : sessions) {
+                    if (s.isOpen() || s.getId().equals(sessionId)) {
+                        s.close();
+                    }
                 }
             }
             iSocketConnectionManager.clearRoomList();
@@ -107,7 +110,7 @@ public class IServerEndPoint {
                 }
             }
             session.getBasicRemote().sendText(stringBuilder.toString());
-        }else {
+        } else {
             //registret client handle message
             String rId = (String) session.getUserProperties().get("roomName");
             try {
@@ -122,7 +125,6 @@ public class IServerEndPoint {
                 e.printStackTrace();
             } /* */
         }
-
 
 
     }
