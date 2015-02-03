@@ -9,7 +9,10 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
 
-
+    <properties>
+        <maven.compiler.source>1.7</maven.compiler.source>
+        <maven.compiler.target>1.7</maven.compiler.target>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -34,7 +37,7 @@
             <version>3.1.1</version>
             <configuration>
                 <port>8080</port>
-                <contextRoot>/</contextRoot>
+                <contextRoot>/iwsocket</contextRoot>
 
             </configuration>
             <executions>
