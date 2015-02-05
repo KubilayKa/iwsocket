@@ -20,14 +20,14 @@
             <artifactId>javax.websocket-api</artifactId>
             <version>1.0</version>
         </dependency>
-
         <dependency>
-            <groupId>org.mortbay.jetty.alpn</groupId>
-            <artifactId>alpn-boot</artifactId>
-            <version>7.1.0.v20141016</version>
+            <groupId>org.glassfish</groupId>
+            <artifactId>maven-embedded-glassfish-plugin</artifactId>
+            <version>3.1.1</version>
+            <type>maven-plugin</type>
         </dependency>
-
     </dependencies>
+
  <build>
      <finalName>iwsocket</finalName>
     <plugins>
@@ -43,7 +43,7 @@
 
             <executions>
                 <execution>
-                    <phase>package</phase>
+                    <phase>compile</phase>
                     <goals>
                         <goal>run</goal>
 
@@ -65,6 +65,7 @@
                 </dependency>
             </dependencies>
         </plugin>
+
     </plugins>
 
 
