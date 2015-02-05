@@ -40,13 +40,17 @@
                 <contextRoot>/iwsocket</contextRoot>
 
             </configuration>
+
             <executions>
                 <execution>
                     <phase>package</phase>
                     <goals>
                         <goal>run</goal>
+
                     </goals>
+
                 </execution>
+
             </executions>
             <dependencies>
                 <dependency>
