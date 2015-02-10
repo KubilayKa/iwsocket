@@ -46,7 +46,10 @@ body {
 }
 #rightDrawer{
     background-color: #000000 ;opacity: .5;
-
+    position: absolute;
+    visibility: hidden;
+    top: 0;
+    right: 0px;
 }
 
 

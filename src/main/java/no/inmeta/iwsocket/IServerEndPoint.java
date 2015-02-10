@@ -35,8 +35,10 @@ public class IServerEndPoint {
             if (iSocketConnectionManager.isRoomExists(firstPlayer)) {
                 roomId = secondPlayer + "&" + firstPlayer;
                 iSocketConnectionManager.updateRoom(roomId, sessionId, "addMc");
+                session.getUserProperties().put("pp","r:");
             } else {
                 iSocketConnectionManager.initRoom(sessionId, roomId);
+                session.getUserProperties().put("pp", "l:");
             }
             session.getBasicRemote().sendText("popup:" + roomId);
         } else {
@@ -118,7 +120,7 @@ public class IServerEndPoint {
                     if (s.isOpen()
                             && rId.equals(s.getUserProperties().get("roomName"))
                             && !session.getId().equals(s.getId())) {
-                        s.getBasicRemote().sendText(string);
+                        s.getBasicRemote().sendText(session.getUserProperties().get("pp")+string);
                     }
                 }
             } catch (IOException e) {

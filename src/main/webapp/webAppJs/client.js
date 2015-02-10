@@ -26,26 +26,37 @@ console.log("w:"+width+"h:"+height)
     ws.onmessage = function (evt) {
         var received_msg = evt.data;
         console.log(received_msg + " recieved...")
-        if ("inc" == received_msg) {
-            counterL.increment();
-            console.log(received_msg);
-        } else if ("dec" == received_msg) {
-            console.log("Dec");
-            counterL.decrement();
-            console.log(received_msg);
-        } else if ("stats" == received_msg) {
-            if ($('#leftDrawer').width() > 50) {
-
-                $('#leftDrawer').css({"width": ((width - 150) / 3), "height": ( height - 50)  }).animate({width: '0px', visibility: "hidden" }, "slow");
-                $('.drawerName').css({"visibility": "hidden"});
-                console.log("visible")
-            } else {
-
-                $('#leftDrawer').css({"width": ((width - 150) / 3), "height": ( height - 50), "visibility": "visible"  }).animate({width: width / 3}, "slow")
-                $('.drawerName').css({"visibility": "visible", "color": "white", "marginLeft": (width - 150) / 7});
-                console.log("not visible")
+        if ( received_msg.indexOf("inc") > -1) {
+            if(received_msg.indexOf("l:")){
+                counterL.increment();
+            }else{
+                counterR.increment();
             }
-            console.log(received_msg);
+        } else if (received_msg.indexOf("dec") > -1) {
+            if(received_msg.indexOf("l:")){
+                counterL.decrement();
+            }else{
+                counterR.decrement();
+            }
+        } else if ( received_msg.indexOf("stats") > -1) {
+            if(received_msg.indexOf("l:") > -1) {
+                if ($('#leftDrawer').width() > 50) {
+                    $('#leftDrawer').css({"width": ((width - 150) / 3), "height": ( height - 50)  }).animate({width: '0px', visibility: "hidden" }, "slow");
+                    $('.drawerName').css({"visibility": "hidden"});
+                } else {
+                    $('#leftDrawer').css({"width": ((width - 150) / 3), "height": ( height - 50), "visibility": "visible"  }).animate({width: width / 3}, "slow")
+                    $('.drawerName').css({"visibility": "visible", "color": "white", "marginLeft": (width - 150) / 7});
+                }
+            }else {
+                if ($('#rightDrawer').width() > 50) {
+                    $('#rightDrawer').css({"width": ((width - 150) / 3), "height": ( height - 50)  }).animate({width: '0px', visibility: "hidden" }, "slow");
+                    $('.drawerName').css({"visibility": "hidden"});
+                } else {
+                    $('#rightDrawer').css({"width": ((width - 150) / 3), "height": ( height - 50), "visibility": "visible"  }).animate({width: width / 3}, "slow")
+                    $('.drawerName').css({"visibility": "visible", "color": "white", "marginLeft": (width - 150) / 7});
+                }
+            }
+
         }else if(received_msg.indexOf("clist") > -1) {
             $('#clientsView').append(received_msg);
         }else{
