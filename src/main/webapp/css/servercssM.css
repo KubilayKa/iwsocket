@@ -51,7 +51,18 @@ body {
     top: 0;
     right: 0px;
 }
+#nameOfTheGame {
 
+    text-shadow: 0px -2px 1px rgba(135, 135, 135, 1);
+    font-weight: normal;
+    letter-spacing: 1pt;
+    word-spacing: 2pt;
+    font-size: 32px;
+    text-align: center;
+    font-family: comic sans, comic sans ms, cursive, verdana, arial, sans-serif;
+    position: absolute;
+
+    }
 
 .infoWrap{
     width: inherit;

@@ -1,7 +1,7 @@
 {
     var height = $(document).height();
     var width = $(document).width();
-console.log("w:"+width+"h:"+height)
+    console.log("w:" + width + "h:" + height)
     var counter;
     var counterL;
     var counterR;
@@ -26,20 +26,20 @@ console.log("w:"+width+"h:"+height)
     ws.onmessage = function (evt) {
         var received_msg = evt.data;
         console.log(received_msg + " recieved...")
-        if ( received_msg.indexOf("inc") > -1) {
-            if(received_msg.indexOf("l:")){
+        if (received_msg.indexOf("inc") > -1) {
+            if (received_msg.indexOf("l:")) {
                 counterL.increment();
-            }else{
+            } else {
                 counterR.increment();
             }
         } else if (received_msg.indexOf("dec") > -1) {
-            if(received_msg.indexOf("l:")){
+            if (received_msg.indexOf("l:")) {
                 counterL.decrement();
-            }else{
+            } else {
                 counterR.decrement();
             }
-        } else if ( received_msg.indexOf("stats") > -1) {
-            if(received_msg.indexOf("l:") > -1) {
+        } else if (received_msg.indexOf("stats") > -1) {
+            if (received_msg.indexOf("l:") > -1) {
                 if ($('#leftDrawer').width() > 50) {
                     $('#leftDrawer').css({"width": ((width - 150) / 3), "height": ( height - 50)  }).animate({width: '0px', visibility: "hidden" }, "slow");
                     $('.drawerName').css({"visibility": "hidden"});
@@ -47,7 +47,7 @@ console.log("w:"+width+"h:"+height)
                     $('#leftDrawer').css({"width": ((width - 150) / 3), "height": ( height - 50), "visibility": "visible"  }).animate({width: width / 3}, "slow")
                     $('.drawerName').css({"visibility": "visible", "color": "white", "marginLeft": (width - 150) / 7});
                 }
-            }else {
+            } else {
                 if ($('#rightDrawer').width() > 50) {
                     $('#rightDrawer').css({"width": ((width - 150) / 3), "height": ( height - 50)  }).animate({width: '0px', visibility: "hidden" }, "slow");
                     $('.drawerName').css({"visibility": "hidden"});
@@ -57,10 +57,14 @@ console.log("w:"+width+"h:"+height)
                 }
             }
 
-        }else if(received_msg.indexOf("clist") > -1) {
+        } else if (received_msg.indexOf("clist") > -1) {
             $('#clientsView').append(received_msg);
-        }else{
-            $("#messageLog").append(received_msg + "\n");
+        }
+        else if (received_msg.indexOf("time:") > -1) {
+              var t=received_msg.split(":");
+            counter.setTime(t[2] * 60);
+        } else if (received_msg.indexOf("start:") > -1) {}else {
+            counter.start();
         }
     };
     ws.onclose = function () {
@@ -74,15 +78,19 @@ console.log("w:"+width+"h:"+height)
         $('#player1').css({"width": ((width - 50) / 2), "height": ( height - 50)  })
         $('#player2').css({"width": ((width - 50) / 2), "height": ( height - 50) })
         $('#vs').css({"width": ( width / 6), "height": ( height / 3),
-            "left": (width / 2) - (width / 10), "top": (height / 10)});
+            "left": (width / 2) - (width / 10), "top": (height / 9)});
         $('#table').css({"width": ( width ), "height": ( height / 3) });
+        var nameSize= $("#nameOfTheGame").width();
+
+        $('#nameOfTheGame').css({"left": (width-nameSize)/2});
         $('#vsImage').css({"width": "100%", "height": "100%"})
         $('.playerImg').css({"width": (width - 50) / 4, "height": (height / 2), "marginLeft": (width - 50) / 9})
-        var counterWidth= ((width - 100) / 4);
+        var counterWidth = ((width - 100) / 4);
         counter = $('.counter').FlipClock(000, {clockFace: 'MinuteCounter', countdown: "true", hideLabels: "true"
-            });
+        });
         counterL = $('.counterL').FlipClock({clockFace: 'Counter' });
         counterR = $('.counterR').FlipClock(000, {clockFace: 'Counter' });
+
         var fCSize = $('.flip-clock-wrapper').width();
         var pad = ((width - 50) / 2) / 4;
         var centerPad = ((width - fCSize) / 2) + 20;
