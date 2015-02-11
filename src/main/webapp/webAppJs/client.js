@@ -63,8 +63,13 @@
         else if (received_msg.indexOf("time:") > -1) {
               var t=received_msg.split(":");
             counter.setTime(t[2] * 60);
-        } else if (received_msg.indexOf("start:") > -1) {}else {
+        } else if (received_msg.indexOf("start:") > -1) {
             counter.start();
+        } else if (received_msg.indexOf("pause:") > -1) {
+            counter.stop();
+
+        }else {
+
         }
     };
     ws.onclose = function () {
@@ -106,10 +111,12 @@
 
     function clearClients() {
         ws.send("clear")
+
     }
 
     function sendMessage() {
         var txt2snd = $("#messageText").val();
         ws.send(txt2snd);
+
     }
 }
