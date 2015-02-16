@@ -33,22 +33,27 @@ public class ISocketConnectionManager {
    }
 
 
-    public  void updateRoom(String roomName,String sessionId,String type){
+    public  String updateRoom(String roomName,String sessionId,String type){
         if (type.equals("addMc")){
-
-            roomList.get(roomName)[1]=sessionId;
+            if (null == roomList.get(roomName)[1] || roomList.get(roomName)[1].equals("") ){
+                roomList.get(roomName)[1]=sessionId;
+                return "l:";
+            }else  {
+                roomList.get(roomName)[2]=sessionId;
+                return "r:";
+            }
         }else if (type.equals("addBc")){
             roomList.get(roomName)[2]=sessionId;
+            return "bc added";
         }else if (type.equals("remove")){
             String[] clients = roomList.get(roomName);
             for (int i=0;i<clients.length;i++){
                 if (clients[i].equals(sessionId))
                     clients[i]=null;
-
             }
-
+            return "list cleared";
         }
-
+        return "unknown operation";
     }
     public  Logger getLogger() {
     return logger;

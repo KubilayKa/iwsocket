@@ -8,7 +8,6 @@ import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -25,9 +24,22 @@ public class IServerEndPoint {
         Map<String, String> pathPrm = session.getPathParameters();
         String firstPlayer = pathPrm.get("first");
         String secondPlayer = pathPrm.get("second");
-        String roomId = firstPlayer + "&" + secondPlayer;
+       // String roomId = firstPlayer + "&" + secondPlayer;
         String sessionId = session.getId();
-        if (firstPlayer.equals("main")) {
+        String roomParticipant[];
+
+        if (pathPrm.get("userAgent").contains("browserClient") ) {
+            session.getUserProperties().put("roomName", "main");
+            iSocketConnectionManager.initRoom(sessionId,firstPlayer);
+        }else if(pathPrm.get("userAgent").contains("androidClient") &&
+                (null != iSocketConnectionManager.getRoomById("main") || iSocketConnectionManager.getRoomById("main").length != 0) ) {
+                session.getUserProperties().put("pp",iSocketConnectionManager.updateRoom("main",sessionId,"addMc"));
+        }else {
+            return;
+        }
+        session.getUserProperties().put("roomName", "main");
+       /* for global play uncomment this
+       if (firstPlayer.equals("main")) {
             session.getUserProperties().put("roomName", firstPlayer);
             return;
         }
@@ -60,14 +72,16 @@ public class IServerEndPoint {
             }
         }
         session.getUserProperties().put("roomName", roomId);
-        logger.log(Level.WARNING, "opened");
+        logger.log(Level.WARNING, "opened");*/
     }
 
     @OnClose
     public void onClose(Session session) {
         String rId = (String) session.getUserProperties().get("roomName");
         String[] clients = iSocketConnectionManager.getRoomById(rId);
-        if (rId.equals("main")) {
+      /*
+       for global play uncomment this
+      if (rId.equals("main")) {
             return;
         } else if (!iSocketConnectionManager.isRgstrdToRoom(session.getId())) {
             return;
@@ -82,7 +96,7 @@ public class IServerEndPoint {
                     e.printStackTrace();
                 }
             }
-        }
+        }*/
     }
 
     @OnMessage
