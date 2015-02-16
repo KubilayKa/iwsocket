@@ -27,27 +27,29 @@
         var received_msg = evt.data;
         console.log(received_msg + " recieved...")
         if (received_msg.indexOf("inc") > -1) {
-            if (received_msg.indexOf("l:")) {
+            if (received_msg.indexOf("l:")> -1) {
                 counterL.increment();
             } else {
                 counterR.increment();
             }
         } else if (received_msg.indexOf("dec") > -1) {
-            if (received_msg.indexOf("l:")) {
+            if (received_msg.indexOf("l:")> -1) {
                 counterL.decrement();
             } else {
                 counterR.decrement();
             }
         } else if (received_msg.indexOf("stats") > -1) {
-            if (received_msg.indexOf("l:") > -1) {
+            if (received_msg.indexOf("l:") > -1) { console.log("er i l:")
                 if ($('#leftDrawer').width() > 50) {
                     $('#leftDrawer').css({"width": ((width - 150) / 3), "height": ( height - 50)  }).animate({width: '0px', visibility: "hidden" }, "slow");
                     $('.drawerName').css({"visibility": "hidden"});
+
                 } else {
                     $('#leftDrawer').css({"width": ((width - 150) / 3), "height": ( height - 50), "visibility": "visible"  }).animate({width: width / 3}, "slow")
                     $('.drawerName').css({"visibility": "visible", "color": "white", "marginLeft": (width - 150) / 7});
                 }
-            } else {
+            }
+            else { console.log("er i r:")
                 if ($('#rightDrawer').width() > 50) {
                     $('#rightDrawer').css({"width": ((width - 150) / 3), "height": ( height - 50)  }).animate({width: '0px', visibility: "hidden" }, "slow");
                     $('.drawerName').css({"visibility": "hidden"});
@@ -63,9 +65,10 @@
         else if (received_msg.indexOf("time:") > -1) {
               var t=received_msg.split(":");
             counter.setTime(t[2] * 60);
-        } else if (received_msg.indexOf("restart:") > -1) {
+        } else if (received_msg.indexOf("restart:") > -1 || received_msg.indexOf("start:")> -1) {
             counter.start();
         } else if (received_msg.indexOf("pause:") > -1) {
+            console.log("er i pause:")
             counter.stop();
 
         }else {

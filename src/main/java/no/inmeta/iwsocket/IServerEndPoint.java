@@ -30,6 +30,7 @@ public class IServerEndPoint {
 
         if (pathPrm.get("userAgent").contains("browserClient") ) {
             session.getUserProperties().put("roomName", "main");
+            session.getUserProperties().put("roomManager", "main");
             iSocketConnectionManager.initRoom(sessionId,firstPlayer);
         }else if(pathPrm.get("userAgent").contains("androidClient") &&
                 (null != iSocketConnectionManager.getRoomById("main") || iSocketConnectionManager.getRoomById("main").length != 0) ) {
@@ -79,6 +80,17 @@ public class IServerEndPoint {
     public void onClose(Session session) {
         String rId = (String) session.getUserProperties().get("roomName");
         String[] clients = iSocketConnectionManager.getRoomById(rId);
+
+        for (Session s : session.getOpenSessions()) {
+            if (s.isOpen()
+                    && rId.equals(s.getUserProperties().get("roomName"))) {
+                try {
+                    iSocketConnectionManager.updateRoom(rId,s.getId(),"remove");
+                    s.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }}
       /*
        for global play uncomment this
       if (rId.equals("main")) {
