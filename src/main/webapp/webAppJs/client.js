@@ -25,21 +25,22 @@
     };
     ws.onmessage = function (evt) {
         var received_msg = evt.data;
-        console.log(received_msg + " recieved...")
+
         if (received_msg.indexOf("inc") > -1) {
-            if (received_msg.indexOf("l:")> -1) {
+            if (received_msg.indexOf("l:") > -1) {
                 counterL.increment();
             } else {
                 counterR.increment();
             }
         } else if (received_msg.indexOf("dec") > -1) {
-            if (received_msg.indexOf("l:")> -1) {
+            if (received_msg.indexOf("l:") > -1) {
                 counterL.decrement();
             } else {
                 counterR.decrement();
             }
         } else if (received_msg.indexOf("stats") > -1) {
-            if (received_msg.indexOf("l:") > -1) { console.log("er i l:")
+            if (received_msg.indexOf("l:") > -1) {
+                console.log("er i l:")
                 if ($('#leftDrawer').width() > 50) {
                     $('#leftDrawer').css({"width": ((width - 150) / 3), "height": ( height - 50)  }).animate({width: '0px', visibility: "hidden" }, "slow");
                     $('.drawerName').css({"visibility": "hidden"});
@@ -49,7 +50,7 @@
                     $('.drawerName').css({"visibility": "visible", "color": "white", "marginLeft": (width - 150) / 7});
                 }
             }
-            else { console.log("er i r:")
+            else {
                 if ($('#rightDrawer').width() > 50) {
                     $('#rightDrawer').css({"width": ((width - 150) / 3), "height": ( height - 50)  }).animate({width: '0px', visibility: "hidden" }, "slow");
                     $('.drawerName').css({"visibility": "hidden"});
@@ -63,16 +64,19 @@
             $('#clientsView').append(received_msg);
         }
         else if (received_msg.indexOf("time:") > -1) {
-              var t=received_msg.split(":");
+            var t = received_msg.split(":");
             counter.setTime(t[2] * 60);
-        } else if (received_msg.indexOf("restart:") > -1 || received_msg.indexOf("start:")> -1) {
+        } else if (received_msg.indexOf("restart:") > -1 || received_msg.indexOf("start:") > -1) {
             counter.start();
         } else if (received_msg.indexOf("pause:") > -1) {
             console.log("er i pause:")
             counter.stop();
 
-        }else {
-
+        } else if (received_msg.indexOf("userName:") > -1) {
+            var userTmp = received_msg.split(":");
+            console.log("usernamerecieved " + userTmp)
+            $("#fPlayerName").text(userTmp[1]);
+            $("#sPlayerName").text(userTmp[2]);
         }
     };
     ws.onclose = function () {
@@ -87,9 +91,9 @@
         $('#vs').css({"width": ( width / 6), "height": ( height / 3),
             "left": (width / 2) - (width / 10), "top": (height / 9)});
         $('#table').css({"width": ( width ), "height": ( height / 3) });
-        var nameSize= $("#nameOfTheGame").width();
+        var nameSize = $("#nameOfTheGame").width();
 
-        $('#nameOfTheGame').css({"left": (width-nameSize)/2});
+        $('#nameOfTheGame').css({"left": (width - nameSize) / 2});
         $('#vsImage').css({"width": "100%", "height": "100%"})
         $('.playerImg').css({"width": (width - 50) / 4, "height": (height / 2), "marginLeft": (width - 50) / 9})
         var counterWidth = ((width - 100) / 4);

@@ -24,18 +24,34 @@ public class IServerEndPoint {
         Map<String, String> pathPrm = session.getPathParameters();
         String firstPlayer = pathPrm.get("first");
         String secondPlayer = pathPrm.get("second");
-       // String roomId = firstPlayer + "&" + secondPlayer;
+        // String roomId = firstPlayer + "&" + secondPlayer;
         String sessionId = session.getId();
-        String roomParticipant[];
+        String roomParticipant[] = iSocketConnectionManager.getRoomById("main");
 
-        if (pathPrm.get("userAgent").contains("browserClient") ) {
-            session.getUserProperties().put("roomName", "main");
-            session.getUserProperties().put("roomManager", "main");
-            iSocketConnectionManager.initRoom(sessionId,firstPlayer);
-        }else if(pathPrm.get("userAgent").contains("androidClient") &&
-                (null != iSocketConnectionManager.getRoomById("main") || iSocketConnectionManager.getRoomById("main").length != 0) ) {
-                session.getUserProperties().put("pp",iSocketConnectionManager.updateRoom("main",sessionId,"addMc"));
-        }else {
+        if (pathPrm.get("userAgent").contains("browserClient")) {
+            if (null == roomParticipant || null == roomParticipant[0]) {
+                session.getUserProperties().put("roomName", "main");
+                session.getUserProperties().put("roomManager", "main");
+                iSocketConnectionManager.initRoom(sessionId, firstPlayer);
+            } else {
+                session.close();
+                return;
+            }
+
+        } else if (pathPrm.get("userAgent").contains("androidClient") &&
+                (null != roomParticipant || null == roomParticipant[1] || null == roomParticipant[2])) {
+            String post = iSocketConnectionManager.updateRoom("main", sessionId, "addMc");
+            session.getUserProperties().put("pp", post);
+            Set<Session> sessions = session.getOpenSessions();
+            Session[] sesArr = sessions.toArray(new Session[3]);
+            if (sessions.size() ==2) {
+                sesArr[0].getBasicRemote().sendText("userName:"+ firstPlayer+":"+secondPlayer);
+            }
+
+
+        } else {
+            session.getBasicRemote().sendText("popup:En annen spill er i gang, vent på din tur dude!");
+            session.close();
             return;
         }
         session.getUserProperties().put("roomName", "main");
@@ -85,12 +101,13 @@ public class IServerEndPoint {
             if (s.isOpen()
                     && rId.equals(s.getUserProperties().get("roomName"))) {
                 try {
-                    iSocketConnectionManager.updateRoom(rId,s.getId(),"remove");
+                    iSocketConnectionManager.updateRoom(rId, s.getId(), "remove");
                     s.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            }}
+            }
+        }
       /*
        for global play uncomment this
       if (rId.equals("main")) {
@@ -146,7 +163,7 @@ public class IServerEndPoint {
                     if (s.isOpen()
                             && rId.equals(s.getUserProperties().get("roomName"))
                             && !session.getId().equals(s.getId())) {
-                        s.getBasicRemote().sendText(session.getUserProperties().get("pp")+string);
+                        s.getBasicRemote().sendText(session.getUserProperties().get("pp") + string);
                     }
                 }
             } catch (IOException e) {
