@@ -8,7 +8,6 @@ import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -25,9 +24,39 @@ public class IServerEndPoint {
         Map<String, String> pathPrm = session.getPathParameters();
         String firstPlayer = pathPrm.get("first");
         String secondPlayer = pathPrm.get("second");
-        String roomId = firstPlayer + "&" + secondPlayer;
+        // String roomId = firstPlayer + "&" + secondPlayer;
         String sessionId = session.getId();
-        if (firstPlayer.equals("main")) {
+        String roomParticipant[] = iSocketConnectionManager.getRoomById("main");
+
+        if (pathPrm.get("userAgent").contains("browserClient")) {
+            if (null == roomParticipant || null == roomParticipant[0]) {
+                session.getUserProperties().put("roomName", "main");
+                session.getUserProperties().put("roomManager", "main");
+                iSocketConnectionManager.initRoom(sessionId, firstPlayer);
+            } else {
+                session.close();
+                return;
+            }
+
+        } else if (pathPrm.get("userAgent").contains("androidClient") &&
+                (null != roomParticipant || null == roomParticipant[1] || null == roomParticipant[2])) {
+            String post = iSocketConnectionManager.updateRoom("main", sessionId, "addMc");
+            session.getUserProperties().put("pp", post);
+            Set<Session> sessions = session.getOpenSessions();
+            Session[] sesArr = sessions.toArray(new Session[3]);
+            if (sessions.size() ==2) {
+                sesArr[0].getBasicRemote().sendText("userName:"+ firstPlayer+":"+secondPlayer);
+            }
+
+
+        } else {
+            session.getBasicRemote().sendText("popup:En annen spill er i gang, vent på din tur dude!");
+            session.close();
+            return;
+        }
+        session.getUserProperties().put("roomName", "main");
+       /* for global play uncomment this
+       if (firstPlayer.equals("main")) {
             session.getUserProperties().put("roomName", firstPlayer);
             return;
         }
@@ -35,8 +64,10 @@ public class IServerEndPoint {
             if (iSocketConnectionManager.isRoomExists(firstPlayer)) {
                 roomId = secondPlayer + "&" + firstPlayer;
                 iSocketConnectionManager.updateRoom(roomId, sessionId, "addMc");
+                session.getUserProperties().put("pp","r:");
             } else {
                 iSocketConnectionManager.initRoom(sessionId, roomId);
+                session.getUserProperties().put("pp", "l:");
             }
             session.getBasicRemote().sendText("popup:" + roomId);
         } else {
@@ -58,14 +89,28 @@ public class IServerEndPoint {
             }
         }
         session.getUserProperties().put("roomName", roomId);
-        logger.log(Level.WARNING, "opened");
+        logger.log(Level.WARNING, "opened");*/
     }
 
     @OnClose
     public void onClose(Session session) {
         String rId = (String) session.getUserProperties().get("roomName");
         String[] clients = iSocketConnectionManager.getRoomById(rId);
-        if (rId.equals("main")) {
+
+        for (Session s : session.getOpenSessions()) {
+            if (s.isOpen()
+                    && rId.equals(s.getUserProperties().get("roomName"))) {
+                try {
+                    iSocketConnectionManager.updateRoom(rId, s.getId(), "remove");
+                    s.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+      /*
+       for global play uncomment this
+      if (rId.equals("main")) {
             return;
         } else if (!iSocketConnectionManager.isRgstrdToRoom(session.getId())) {
             return;
@@ -80,7 +125,7 @@ public class IServerEndPoint {
                     e.printStackTrace();
                 }
             }
-        }
+        }*/
     }
 
     @OnMessage
@@ -118,7 +163,7 @@ public class IServerEndPoint {
                     if (s.isOpen()
                             && rId.equals(s.getUserProperties().get("roomName"))
                             && !session.getId().equals(s.getId())) {
-                        s.getBasicRemote().sendText(string);
+                        s.getBasicRemote().sendText(session.getUserProperties().get("pp") + string);
                     }
                 }
             } catch (IOException e) {

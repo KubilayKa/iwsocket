@@ -8,12 +8,10 @@
     <artifactId>iwSocket</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
-
     <properties>
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
     </properties>
-
     <dependencies>
         <dependency>
             <groupId>javax.websocket</groupId>
@@ -38,19 +36,14 @@
             <configuration>
                 <port>8080</port>
                 <contextRoot>/iwsocket</contextRoot>
-
             </configuration>
-
             <executions>
                 <execution>
                     <phase>compile</phase>
                     <goals>
                         <goal>run</goal>
-
                     </goals>
-
                 </execution>
-
             </executions>
             <dependencies>
                 <dependency>
@@ -67,8 +60,6 @@
         </plugin>
 
     </plugins>
-
-
  </build>
     <pluginRepositories>
         <pluginRepository>

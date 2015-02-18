@@ -3,7 +3,7 @@
 <head>
     <title></title>
     <link href="css/servercss.css" media="screen and (min-width:1600px )" type="text/css" rel="stylesheet">
-    <link href="css/servercssM.css" media="screen and (min-width:1000px ) " type="text/css" rel="stylesheet">
+    <link href="css/servercssM.css" media="screen and (min-width:1000px ) and (max-width:1400px) " type="text/css" rel="stylesheet">
     <link href="css/flipclock.css" type="text/css" rel="stylesheet">
     <link href="css/jqm-demos.css" type="text/css" rel="stylesheet">
 </head>
@@ -11,12 +11,16 @@
 <div id="leftDrawer">
     <h1 class="drawerName">STATS</h1>
 </div>
-<div id="rightDrawer"></div>
+<div id="rightDrawer">
+    <h1 class="drawerName">STATS</h1>
+</div>
+<p id="nameOfTheGame">Ping Pong</p>
 <div id="pageWrapper">
     <div id="pictureHolder">
+
         <div id="player1">
             <table class="infoWrap">
-            <tr><td><p class="playerName red">PLAYER NAME HERE</p></td></tr>
+            <tr><td><p id="fPlayerName" class="playerName red">PLAYER NAME HERE</p></td></tr>
             <tr><td><img class="playerImg" src="img/user-ic2.png"></td></tr>
             <tr><td><div class="counterL"></div></td> </tr>
             </table>
@@ -24,7 +28,7 @@
         <div id="vs"><img id="vsImage" src="img/vs1.png"></div>
         <div id="player2">
             <table class="infoWrap">
-                <tr><td><p class="playerName">PLAYER NAME HERE</p></td></tr>
+                <tr><td><p id="sPlayerName" class="playerName">PLAYER NAME HERE</p></td></tr>
                 <tr><td><img class="playerImg" src="img/user-ic.png"></td></tr>
                 <tr ><td><div  class="counterR"></div></td></tr>
             </table>
