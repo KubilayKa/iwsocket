@@ -1,5 +1,9 @@
 package no.inmeta.iwsocket;
 
+import com.google.gson.JsonParser;
+import org.lightcouch.CouchDbClient;
+import org.lightcouch.Response;
+
 import javax.websocket.OnClose;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
@@ -17,23 +21,23 @@ import java.util.logging.Logger;
 public class IServerEndPoint {
     private ISocketConnectionManager iSocketConnectionManager = ISocketConnectionManager.getIstance();
     private Logger logger = iSocketConnectionManager.getLogger();
-   // private CouchDbClient dbClient = new DbClient().getCouchDbClient();
+    private CouchDbClient dbClient = new DbClient().getCouchDbClient();
     @OnOpen
     public void onOpen(Session session) throws IOException {
         //  session.getUserProperties().put("chatroom","chatroom");
         Map<String, String> pathPrm = session.getPathParameters();
         String firstPlayer = pathPrm.get("first");
         String secondPlayer = pathPrm.get("second");
-        // String roomId = firstPlayer + "&" + secondPlayer;
+        String roomId = firstPlayer + "&" + secondPlayer;
         String sessionId = session.getId();
         String roomParticipant[] = iSocketConnectionManager.getRoomById("main");
-       // Response response=dbClient.save("Success dude");
+         Response response=dbClient.save(new JsonParser().parse("{\"udidit\":\"true\"}").getAsJsonObject());
         if (pathPrm.get("userAgent").contains("browserClient")) {
             if (null == roomParticipant || null == roomParticipant[0]) {
                 session.getUserProperties().put("roomName", "main");
                 session.getUserProperties().put("roomManager", "main");
                 iSocketConnectionManager.initRoom(sessionId, firstPlayer);
-               // session.getBasicRemote().sendText("db:"+response.toString());
+                session.getBasicRemote().sendText("db:"+response.toString());
             } else {
                 session.close();
                 return;
