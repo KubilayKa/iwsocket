@@ -14,7 +14,12 @@ public class ISocketConnectionManager {
 
 
     private final  Logger logger = Logger.getLogger("AISCLI");
+    private final static ISocketConnectionManager iSocketConnectionManager = new ISocketConnectionManager();
     private ISocketConnectionManager(){}
+    public static ISocketConnectionManager getIstance(){
+        return iSocketConnectionManager;
+
+    }
     private final Map<String,IClientFbo> list=new HashMap<>();
     public void initRoom(String sIdf,  String roomid ){
         //list.put(sId,iClientFbo);
@@ -31,8 +36,6 @@ public class ISocketConnectionManager {
      }
        return false;
    }
-
-
     public  String updateRoom(String roomName,String sessionId,String type){
         if (type.equals("addMc")){
             if (null == roomList.get(roomName)[1] || roomList.get(roomName)[1].equals("") ){
@@ -62,12 +65,12 @@ public class ISocketConnectionManager {
         //TODO: sjekk om mc eller bc rediger til om den har ikke rom dediser et rom
         //TODO: legg inn logikk f
     }
-    private final static ISocketConnectionManager iSocketConnectionManager = new ISocketConnectionManager();
-    private  final static Map<String,String[]> roomList =new HashMap<>();
-    public static ISocketConnectionManager getIstance(){
-        return iSocketConnectionManager;
 
-    }
+    private  final static Map<String,String[]> roomList =new HashMap<>();
+
+
+
+
     public   Set<String> getRoomNames() {
 
         return roomList.keySet();
@@ -85,12 +88,9 @@ public class ISocketConnectionManager {
         }
         return false;
     }
-
-
     public   void clearRoomList() {
          roomList.clear();
     }
-
     public static void deleteRoom(String rId) {
         roomList.remove(rId);
     }
