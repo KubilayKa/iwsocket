@@ -23,6 +23,12 @@
             <artifactId>alpn-boot</artifactId>
             <version>7.1.0.v20141016</version>
         </dependency>
+        <dependency>
+            <groupId>org.lightcouch</groupId>
+            <artifactId>lightcouch</artifactId>
+            <version>0.1.6</version>
+
+        </dependency>
     </dependencies>
  <build>
      <finalName>iwsocket</finalName>

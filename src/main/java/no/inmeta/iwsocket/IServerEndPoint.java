@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 public class IServerEndPoint {
     private ISocketConnectionManager iSocketConnectionManager = ISocketConnectionManager.getIstance();
     private Logger logger = iSocketConnectionManager.getLogger();
-
+   // private CouchDbClient dbClient = new DbClient().getCouchDbClient();
     @OnOpen
     public void onOpen(Session session) throws IOException {
         //  session.getUserProperties().put("chatroom","chatroom");
@@ -27,12 +27,13 @@ public class IServerEndPoint {
         // String roomId = firstPlayer + "&" + secondPlayer;
         String sessionId = session.getId();
         String roomParticipant[] = iSocketConnectionManager.getRoomById("main");
-
+       // Response response=dbClient.save("Success dude");
         if (pathPrm.get("userAgent").contains("browserClient")) {
             if (null == roomParticipant || null == roomParticipant[0]) {
                 session.getUserProperties().put("roomName", "main");
                 session.getUserProperties().put("roomManager", "main");
                 iSocketConnectionManager.initRoom(sessionId, firstPlayer);
+               // session.getBasicRemote().sendText("db:"+response.toString());
             } else {
                 session.close();
                 return;

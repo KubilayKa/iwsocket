@@ -62,8 +62,7 @@
 
         } else if (received_msg.indexOf("clist") > -1) {
             $('#clientsView').append(received_msg);
-        }
-        else if (received_msg.indexOf("time:") > -1) {
+        } else if (received_msg.indexOf("time:") > -1) {
             var t = received_msg.split(":");
             counter.setTime(t[2] * 60);
         } else if (received_msg.indexOf("restart:") > -1 || received_msg.indexOf("start:") > -1) {
@@ -77,6 +76,8 @@
             console.log("usernamerecieved " + userTmp)
             $("#fPlayerName").text(userTmp[1]);
             $("#sPlayerName").text(userTmp[2]);
+        } else if(received_msg.indexOf("db:") > -1) {
+            alert("u did it dude"+ "\n"+received_msg)
         }
     };
     ws.onclose = function () {
