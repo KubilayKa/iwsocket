@@ -14,11 +14,10 @@ ws.onmessage = function (evt) {
     if(xyz[0]<2&&-2>xyz[0]){
         $("#energyBall").animate({left:oleft,top:otop},"fast")
     }else {
-        if(xyz[0]>2) {
-            $("#energyBall").animate({left:oleft-(xyz[0]/5),top:otop},"fast")
-        }else if(xyz[0]< -2) {
-            $("#energyBall").animate({left:oleft-(xyz[0]/5),top:otop},"fast")
-
+        if(xyz[0]>2 || xyz[0] < 400) {
+            $("#energyBall").animate({left:oleft-xyz[0] ,top:otop},"fast")
+        }else if(xyz[0]< -2 || xyz[0] > -450) {
+            $("#energyBall").animate({left:oleft+xyz[0] ,top:otop},"fast")
         }
     }
     console.log($("#energyBall").offset());
