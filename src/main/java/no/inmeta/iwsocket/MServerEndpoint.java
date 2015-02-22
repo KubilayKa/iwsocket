@@ -35,7 +35,16 @@ public class MServerEndpoint {
 
         @OnMessage
         public void onMessaege(String string, Session session) throws IOException {
-
+            try {
+                for (Session s : session.getOpenSessions()) {
+                    if (s.isOpen()
+                            && !session.getId().equals(s.getId())) {
+                        s.getBasicRemote().sendText(string);
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } /* */
         }
     }
 
