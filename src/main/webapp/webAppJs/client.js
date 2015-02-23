@@ -25,60 +25,68 @@
     };
     ws.onmessage = function (evt) {
         var received_msg = evt.data;
+       console.log(typeof received_msg);
 
-        if (received_msg.indexOf("inc") > -1) {
-            if (received_msg.indexOf("l:") > -1) {
-                counterL.increment();
-            } else {
-                counterR.increment();
-            }
-        } else if (received_msg.indexOf("dec") > -1) {
-            if (received_msg.indexOf("l:") > -1) {
-                counterL.decrement();
-            } else {
-                counterR.decrement();
-            }
-        } else if (received_msg.indexOf("stats") > -1) {
-            if (received_msg.indexOf("l:") > -1) {
-                console.log("er i l:")
-                if ($('#leftDrawer').width() > 50) {
-                    $('#leftDrawer').css({"width": ((width - 150) / 3), "height": ( height - 50)  }).animate({width: '0px', visibility: "hidden" }, "slow");
-                    $('.drawerName').css({"visibility": "hidden"});
-
+        if(typeof(received_msg) == "object" ) {
+        var url=  URL.createObjectURL(received_msg);
+         console.log("url:"+url);
+            document.getElementById("player1Img").src =url;
+        }else {
+            if (received_msg.indexOf("inc") > -1) {
+                if (received_msg.indexOf("l:") > -1) {
+                    counterL.increment();
                 } else {
-                    $('#leftDrawer').css({"width": ((width - 150) / 3), "height": ( height - 50), "visibility": "visible"  }).animate({width: width / 3}, "slow")
-                    $('.drawerName').css({"visibility": "visible", "color": "white", "marginLeft": (width - 150) / 7});
+                    counterR.increment();
                 }
-            }
-            else {
-                if ($('#rightDrawer').width() > 50) {
-                    $('#rightDrawer').css({"width": ((width - 150) / 3), "height": ( height - 50)  }).animate({width: '0px', visibility: "hidden" }, "slow");
-                    $('.drawerName').css({"visibility": "hidden"});
+            } else if (received_msg.indexOf("dec") > -1) {
+                if (received_msg.indexOf("l:") > -1) {
+                    counterL.decrement();
                 } else {
-                    $('#rightDrawer').css({"width": ((width - 150) / 3), "height": ( height - 50), "visibility": "visible"  }).animate({width: width / 3}, "slow")
-                    $('.drawerName').css({"visibility": "visible", "color": "white", "marginLeft": (width - 150) / 7});
+                    counterR.decrement();
                 }
+            } else if (received_msg.indexOf("stats") > -1) {
+                if (received_msg.indexOf("l:") > -1) {
+                    console.log("er i l:")
+                    if ($('#leftDrawer').width() > 50) {
+                        $('#leftDrawer').css({"width": ((width - 150) / 3), "height": ( height - 50)  }).animate({width: '0px', visibility: "hidden" }, "slow");
+                        $('.drawerName').css({"visibility": "hidden"});
+
+                    } else {
+                        $('#leftDrawer').css({"width": ((width - 150) / 3), "height": ( height - 50), "visibility": "visible"  }).animate({width: width / 3}, "slow")
+                        $('.drawerName').css({"visibility": "visible", "color": "white", "marginLeft": (width - 150) / 7});
+                    }
+                }
+                else {
+                    if ($('#rightDrawer').width() > 50) {
+                        $('#rightDrawer').css({"width": ((width - 150) / 3), "height": ( height - 50)  }).animate({width: '0px', visibility: "hidden" }, "slow");
+                        $('.drawerName').css({"visibility": "hidden"});
+                    } else {
+                        $('#rightDrawer').css({"width": ((width - 150) / 3), "height": ( height - 50), "visibility": "visible"  }).animate({width: width / 3}, "slow")
+                        $('.drawerName').css({"visibility": "visible", "color": "white", "marginLeft": (width - 150) / 7});
+                    }
+                }
+
+            } else if (received_msg.indexOf("clist") > -1) {
+                $('#clientsView').append(received_msg);
+            } else if (received_msg.indexOf("time:") > -1) {
+                var t = received_msg.split(":");
+                counter.setTime(t[2] * 60);
+            } else if (received_msg.indexOf("restart:") > -1 || received_msg.indexOf("start:") > -1) {
+                counter.start();
+            } else if (received_msg.indexOf("pause:") > -1) {
+                console.log("er i pause:")
+                counter.stop();
+
+            } else if (received_msg.indexOf("userName:") > -1) {
+                var userTmp = received_msg.split(":");
+                console.log("usernamerecieved " + userTmp)
+                $("#fPlayerName").text(userTmp[1]);
+                $("#sPlayerName").text(userTmp[2]);
+            } else if(received_msg.indexOf("db:") > -1) {
+                alert("u did it dude"+ "\n"+received_msg)
             }
-
-        } else if (received_msg.indexOf("clist") > -1) {
-            $('#clientsView').append(received_msg);
-        } else if (received_msg.indexOf("time:") > -1) {
-            var t = received_msg.split(":");
-            counter.setTime(t[2] * 60);
-        } else if (received_msg.indexOf("restart:") > -1 || received_msg.indexOf("start:") > -1) {
-            counter.start();
-        } else if (received_msg.indexOf("pause:") > -1) {
-            console.log("er i pause:")
-            counter.stop();
-
-        } else if (received_msg.indexOf("userName:") > -1) {
-            var userTmp = received_msg.split(":");
-            console.log("usernamerecieved " + userTmp)
-            $("#fPlayerName").text(userTmp[1]);
-            $("#sPlayerName").text(userTmp[2]);
-        } else if(received_msg.indexOf("db:") > -1) {
-            alert("u did it dude"+ "\n"+received_msg)
         }
+
     };
     ws.onclose = function () {
         // websocket is closed.

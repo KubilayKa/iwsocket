@@ -1,9 +1,8 @@
 package no.inmeta.iwsocket;
 
-import com.google.gson.JsonParser;
 import org.lightcouch.CouchDbClient;
-import org.lightcouch.Response;
 
+import javax.websocket.EncodeException;
 import javax.websocket.OnClose;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
@@ -31,13 +30,19 @@ public class IServerEndPoint {
         String roomId = firstPlayer + "&" + secondPlayer;
         String sessionId = session.getId();
         String roomParticipant[] = iSocketConnectionManager.getRoomById("main");
-         Response response=dbClient.save(new JsonParser().parse("{\"udidit\":\"true\"}").getAsJsonObject());
+        // Response response=dbClient.save(new JsonParser().parse("{\"udidit\":\"true\"}").getAsJsonObject());
         if (pathPrm.get("userAgent").contains("browserClient")) {
             if (null == roomParticipant || null == roomParticipant[0]) {
                 session.getUserProperties().put("roomName", "main");
                 session.getUserProperties().put("roomManager", "main");
                 iSocketConnectionManager.initRoom(sessionId, firstPlayer);
-                session.getBasicRemote().sendText("db:"+response.toString());
+                byte[] test =iSocketConnectionManager.getPicBytes("KubilayKarayilan.jpg");
+                try {
+                    session.getBasicRemote().sendObject(test);
+                } catch (EncodeException e) {
+                    e.printStackTrace();
+                }
+             //   session.getBasicRemote().sendText("db:"+response.toString());
             } else {
                 session.close();
                 return;
@@ -50,10 +55,10 @@ public class IServerEndPoint {
             Set<Session> sessions = session.getOpenSessions();
             Session[] sesArr = sessions.toArray(new Session[3]);
             if (sessions.size() ==2) {
+
                 sesArr[0].getBasicRemote().sendText("userName:"+ firstPlayer+":"+secondPlayer);
+
             }
-
-
         } else {
             session.getBasicRemote().sendText("popup:En annen spill er i gang, vent på din tur dude!");
             session.close();
