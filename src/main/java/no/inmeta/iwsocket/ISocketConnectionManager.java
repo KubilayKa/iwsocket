@@ -3,6 +3,7 @@ package no.inmeta.iwsocket;
 import javax.websocket.Session;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
@@ -110,19 +111,13 @@ public class ISocketConnectionManager {
     }
 
     public byte[] getPicBytes(String s) throws IOException {
-
-        /* older than j7 use
-         File fnew=new File("/tmp/rose.jpg");
-        BufferedImage originalImage=ImageIO.read(fnew);
-        ByteArrayOutputStream baos=new ByteArrayOutputStream();
-        ImageIO.write(originalImage, "jpg", baos );
-        byte[] imageInByte=baos.toByteArray();*/
-       String user= System.getProperty("user.home");
-       String user2= System.getProperty("home.dir");
-        File fnew = new File(getClass().getClassLoader().getResource("employeeimages/kubilaykarayilan.jpg").getFile());
-        byte[] tmp = Files.readAllBytes(fnew.toPath());
-        if (null == tmp) {
-            File unkn = new File("employeeimages/unknown_player.png");
+        URL picUrl=getClass().getClassLoader().getResource("employeeimages" + File.separator + s + ".jpg");
+        byte[] tmp;
+        if (null != picUrl ) {
+            File fnew = new File(picUrl.getFile());
+            tmp = Files.readAllBytes(fnew.toPath());
+        }else {
+            File unkn = new File(getClass().getClassLoader().getResource("employeeimages/unknown_player.png").getFile());
             tmp = Files.readAllBytes(unkn.toPath());
         }
         return tmp;

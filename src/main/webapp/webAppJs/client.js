@@ -25,11 +25,16 @@
     };
     ws.onmessage = function (evt) {
         var received_msg = evt.data;
-       console.log(typeof received_msg);
 
-        if(typeof(received_msg) == "object" ) {
-        var url=  URL.createObjectURL(received_msg);
-         console.log("url:"+url);
+       var jsonson=JSON.parse(received_msg);
+
+        if(undefined != jsonson.userName ||typeof(jsonson.userName) !== "undifened"   ) {
+            var pico=JSON.stringify(jsonson.pic).split(",");
+
+            console.log("sdlkfj"+ pico)
+             var blob =new Blob(pico,{type:'image'})
+
+             var url=  URL.createObjectURL(blob);
             document.getElementById("player1Img").src =url;
         }else {
             if (received_msg.indexOf("inc") > -1) {

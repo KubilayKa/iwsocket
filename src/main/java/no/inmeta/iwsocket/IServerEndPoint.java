@@ -1,5 +1,7 @@
 package no.inmeta.iwsocket;
 
+
+import com.google.gson.Gson;
 import org.lightcouch.CouchDbClient;
 
 import javax.websocket.EncodeException;
@@ -36,9 +38,11 @@ public class IServerEndPoint {
                 session.getUserProperties().put("roomName", "main");
                 session.getUserProperties().put("roomManager", "main");
                 iSocketConnectionManager.initRoom(sessionId, firstPlayer);
-                byte[] test =iSocketConnectionManager.getPicBytes("KubilayKarayilan.jpg");
+                byte[] fpPic =iSocketConnectionManager.getPicBytes(firstPlayer);
+                Gson gson = new Gson();
+
                 try {
-                    session.getBasicRemote().sendObject(test);
+                    session.getBasicRemote().sendObject(gson.toJson(new PicFbo().setUserName("kubican").setPic(fpPic)));
                 } catch (EncodeException e) {
                     e.printStackTrace();
                 }
@@ -52,12 +56,18 @@ public class IServerEndPoint {
                 (null != roomParticipant || null == roomParticipant[1] || null == roomParticipant[2])) {
             String post = iSocketConnectionManager.updateRoom("main", sessionId, "addMc");
             session.getUserProperties().put("pp", post);
+            session.getUserProperties().put("roomName", "main");
             Set<Session> sessions = session.getOpenSessions();
             Session[] sesArr = sessions.toArray(new Session[3]);
             if (sessions.size() ==2) {
-
                 sesArr[0].getBasicRemote().sendText("userName:"+ firstPlayer+":"+secondPlayer);
-
+                byte[] fpPic =iSocketConnectionManager.getPicBytes(firstPlayer);
+                byte[] spPic =iSocketConnectionManager.getPicBytes(secondPlayer);
+                try {
+                   sesArr[0].getBasicRemote().sendObject(fpPic);
+                } catch (EncodeException e) {
+                    e.printStackTrace();
+                }
             }
         } else {
             session.getBasicRemote().sendText("popup:En annen spill er i gang, vent på din tur dude!");
