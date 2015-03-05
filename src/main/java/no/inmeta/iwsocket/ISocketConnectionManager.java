@@ -61,7 +61,7 @@ public class ISocketConnectionManager {
             return "bc added";
         } else if (type.equals("remove")) {
             String[] clients = roomList.get(roomName);
-            for (int i = 0; i < clients.length; i++) {
+            for (int i = 1; i < clients.length; i++) {
                 if (clients[i].equals(sessionId))
                     clients[i] = null;
             }
@@ -103,7 +103,9 @@ public class ISocketConnectionManager {
     }
 
     public void clearRoomList() {
+
         roomList.clear();
+
     }
 
     public static void deleteRoom(String rId) {
@@ -111,7 +113,7 @@ public class ISocketConnectionManager {
     }
 
     public byte[] getPicBytes(String s) throws IOException {
-        URL picUrl=getClass().getClassLoader().getResource("employeeimages" + File.separator + s + ".jpg");
+        URL picUrl=getClass().getClassLoader().getResource("employeeimages" + File.separator + s.toLowerCase() + ".jpg");
         byte[] tmp;
         if (null != picUrl ) {
             File fnew = new File(picUrl.getFile());

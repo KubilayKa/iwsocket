@@ -10,9 +10,9 @@
     var paramRaw = url.split(":)");
     if ("undefined" === paramRaw || paramRaw.length == 1) {
         paramRaw = ["", "main&main"]
-        //paramRaw=["","userAgent=browserClient&first=main&second=main"];
+
     }
-    //  var roomName=paramRaw[1].replace("userAgent=","").replace("first=","").replace("second=","");
+
     var paramsAndVal = paramRaw[1].split("&");
     var firstPlayer = paramsAndVal[0];
     var secondPlayer = paramsAndVal[1];
@@ -24,19 +24,27 @@
         ws.send("bc:" + url.split("?")[1]);
     };
     ws.onmessage = function (evt) {
+        console.log(evt.data)
         var received_msg = evt.data;
-
-       var jsonson=JSON.parse(received_msg);
-
-        if(undefined != jsonson.userName ||typeof(jsonson.userName) !== "undifened"   ) {
-            var pico=JSON.stringify(jsonson.pic).split(",");
-
-            console.log("sdlkfj"+ pico)
-             var blob =new Blob(pico,{type:'image'})
-
-             var url=  URL.createObjectURL(blob);
-            document.getElementById("player1Img").src =url;
-        }else {
+        var jsonson= undefined;
+         if(received_msg.length > 20) {
+             jsonson =JSON.parse(received_msg);
+         }
+        if (  undefined != jsonson && undefined != jsonson.userName ) {
+            var picfbo={userName:"",b64:"",player:"",pos:""}
+            console.log("in jsonson")
+            picfbo.userName = jsonson.userName;
+            picfbo.b64 = jsonson.b64;
+            picfbo.pos= jsonson.pos;
+            if(picfbo.pos === "f") {
+                $("#fPlayerName").text(picfbo.userName);   console.log("fir")
+                document.getElementById("player1Img").src = picfbo.b64;
+            }
+            else {
+                $("#sPlayerName").text(picfbo.userName);console.log("sec")
+                document.getElementById("player2Img").src = picfbo.b64;
+            }
+        } else {
             if (received_msg.indexOf("inc") > -1) {
                 if (received_msg.indexOf("l:") > -1) {
                     counterL.increment();
@@ -82,13 +90,8 @@
                 console.log("er i pause:")
                 counter.stop();
 
-            } else if (received_msg.indexOf("userName:") > -1) {
-                var userTmp = received_msg.split(":");
-                console.log("usernamerecieved " + userTmp)
-                $("#fPlayerName").text(userTmp[1]);
-                $("#sPlayerName").text(userTmp[2]);
-            } else if(received_msg.indexOf("db:") > -1) {
-                alert("u did it dude"+ "\n"+received_msg)
+            }  else if (received_msg.indexOf("db:") > -1) {
+                alert("u did it dude" + "\n" + received_msg)
             }
         }
 

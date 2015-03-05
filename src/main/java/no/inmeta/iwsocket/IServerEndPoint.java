@@ -1,7 +1,7 @@
 package no.inmeta.iwsocket;
 
 
-import com.google.gson.Gson;
+
 import org.lightcouch.CouchDbClient;
 
 import javax.websocket.EncodeException;
@@ -23,6 +23,7 @@ public class IServerEndPoint {
     private ISocketConnectionManager iSocketConnectionManager = ISocketConnectionManager.getIstance();
     private Logger logger = iSocketConnectionManager.getLogger();
     private CouchDbClient dbClient = new DbClient().getCouchDbClient();
+    private IWMessageEcoder iwMessageEcoder= new IWMessageEcoder();
     @OnOpen
     public void onOpen(Session session) throws IOException {
         //  session.getUserProperties().put("chatroom","chatroom");
@@ -37,16 +38,7 @@ public class IServerEndPoint {
             if (null == roomParticipant || null == roomParticipant[0]) {
                 session.getUserProperties().put("roomName", "main");
                 session.getUserProperties().put("roomManager", "main");
-                iSocketConnectionManager.initRoom(sessionId, firstPlayer);
-                byte[] fpPic =iSocketConnectionManager.getPicBytes(firstPlayer);
-                Gson gson = new Gson();
-
-                try {
-                    session.getBasicRemote().sendObject(gson.toJson(new PicFbo().setUserName("kubican").setPic(fpPic)));
-                } catch (EncodeException e) {
-                    e.printStackTrace();
-                }
-             //   session.getBasicRemote().sendText("db:"+response.toString());
+                iSocketConnectionManager.initRoom(sessionId, "main");
             } else {
                 session.close();
                 return;
@@ -59,12 +51,16 @@ public class IServerEndPoint {
             session.getUserProperties().put("roomName", "main");
             Set<Session> sessions = session.getOpenSessions();
             Session[] sesArr = sessions.toArray(new Session[3]);
-            if (sessions.size() ==2) {
-                sesArr[0].getBasicRemote().sendText("userName:"+ firstPlayer+":"+secondPlayer);
+            if (sessions.size() == 3) {
                 byte[] fpPic =iSocketConnectionManager.getPicBytes(firstPlayer);
                 byte[] spPic =iSocketConnectionManager.getPicBytes(secondPlayer);
                 try {
-                   sesArr[0].getBasicRemote().sendObject(fpPic);
+                    PicFbo picFboF= new PicFbo().setUserName(firstPlayer).setB64(iwMessageEcoder.toB64(fpPic)).setPos("f");
+                    PicFbo picFboS= new PicFbo().setUserName(secondPlayer).setB64(iwMessageEcoder.toB64(spPic)).setPos("s");
+                    sesArr[0].getBasicRemote().sendObject(iwMessageEcoder.jsonify(picFboF));
+                    sesArr[0].getBasicRemote().sendObject(iwMessageEcoder.jsonify(picFboS));
+                    sesArr[1].getUserProperties().put("userName",firstPlayer);
+                    sesArr[2].getUserProperties().put("userName",secondPlayer);
                 } catch (EncodeException e) {
                     e.printStackTrace();
                 }
@@ -75,41 +71,6 @@ public class IServerEndPoint {
             return;
         }
         session.getUserProperties().put("roomName", "main");
-       /* for global play uncomment this
-       if (firstPlayer.equals("main")) {
-            session.getUserProperties().put("roomName", firstPlayer);
-            return;
-        }
-        if (pathPrm.get("userAgent").contains("androidClient")) {
-            if (iSocketConnectionManager.isRoomExists(firstPlayer)) {
-                roomId = secondPlayer + "&" + firstPlayer;
-                iSocketConnectionManager.updateRoom(roomId, sessionId, "addMc");
-                session.getUserProperties().put("pp","r:");
-            } else {
-                iSocketConnectionManager.initRoom(sessionId, roomId);
-                session.getUserProperties().put("pp", "l:");
-            }
-            session.getBasicRemote().sendText("popup:" + roomId);
-        } else {
-            String[] roomMembers = iSocketConnectionManager.getRoomById(roomId);
-            if (null != roomMembers[0] || session.getId() != roomMembers[2]) {
-
-                iSocketConnectionManager.updateRoom(roomId, sessionId, "addBc");
-            } else {
-                return;
-            }
-            Set<Session> openSessions = session.getOpenSessions();
-            for (String ss : roomMembers) {
-                for (Session s : openSessions) {
-                    if (ss.equals(s.getId()) && !session.getId().equals(ss)) {
-                        s.getBasicRemote().sendText("xpopup");
-                    }
-
-                }
-            }
-        }
-        session.getUserProperties().put("roomName", roomId);
-        logger.log(Level.WARNING, "opened");*/
     }
 
     @OnClose
@@ -122,30 +83,16 @@ public class IServerEndPoint {
                     && rId.equals(s.getUserProperties().get("roomName"))) {
                 try {
                     iSocketConnectionManager.updateRoom(rId, s.getId(), "remove");
-                    s.close();
+                    if(null ==s.getUserProperties().get("roomManager")) {
+                        s.close();
+                    }
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }
-      /*
-       for global play uncomment this
-      if (rId.equals("main")) {
-            return;
-        } else if (!iSocketConnectionManager.isRgstrdToRoom(session.getId())) {
-            return;
-        }
-        iSocketConnectionManager.deleteRoom(rId);
-        for (Session s : session.getOpenSessions()) {
-            if (s.isOpen()
-                    && rId.equals(s.getUserProperties().get("roomName"))) {
-                try {
-                    s.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }*/
+
     }
 
     @OnMessage
@@ -163,8 +110,6 @@ public class IServerEndPoint {
                 }
             }
             iSocketConnectionManager.clearRoomList();
-
-
         } else if (string.equals("clients")) {
             Map<String, String[]> list = iSocketConnectionManager.getRoomList();
             StringBuilder stringBuilder = new StringBuilder("clist");
