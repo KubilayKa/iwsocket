@@ -114,11 +114,16 @@
         $('#vsImage').css({"width": "100%", "height": "100%"})
         $('.playerImg').css({"width": (width - 50) / 4, "height": (height / 2), "marginLeft": (width - 50) / 9})
         var counterWidth = ((width - 100) / 4);
-        counter = $('.counter').FlipClock(000, {clockFace: 'MinuteCounter', countdown: "true", hideLabels: "true"
-        });
-        counterL = $('.counterL').FlipClock({clockFace: 'Counter' });
-        counterR = $('.counterR').FlipClock(000, {clockFace: 'Counter' });
 
+        counterL = $('.counterL').FlipClock(2,{clockFace: 'Counter' });
+        counterR = $('.counterR').FlipClock(3 , {clockFace: 'Counter' });
+        counter = $('.counter').FlipClock(5, {clockFace: 'MinuteCounter', countdown: true, hideLabels: "true",autoStart:true,
+            callbacks:{stop:function(){
+                var lResult=counterL.getTime().time;
+                var rResult=counterR.getTime().time;
+
+                ws.send("results:"+$("#fPlayerName").text()+":"+lResult+":"+$("#sPlayerName").text()+":"+rResult);
+            }}});
         var fCSize = $('.flip-clock-wrapper').width();
         var pad = ((width - 50) / 2) / 4;
         var centerPad = ((width - fCSize) / 2) + 20;

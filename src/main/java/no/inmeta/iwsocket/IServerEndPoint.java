@@ -1,7 +1,7 @@
 package no.inmeta.iwsocket;
 
 
-
+import org.json.simple.JSONObject;
 import org.lightcouch.CouchDbClient;
 
 import javax.websocket.EncodeException;
@@ -23,7 +23,8 @@ public class IServerEndPoint {
     private ISocketConnectionManager iSocketConnectionManager = ISocketConnectionManager.getIstance();
     private Logger logger = iSocketConnectionManager.getLogger();
     private CouchDbClient dbClient = new DbClient().getCouchDbClient();
-    private IWMessageEcoder iwMessageEcoder= new IWMessageEcoder();
+    private IWMessageEcoder iwMessageEcoder = new IWMessageEcoder();
+
     @OnOpen
     public void onOpen(Session session) throws IOException {
         //  session.getUserProperties().put("chatroom","chatroom");
@@ -43,7 +44,6 @@ public class IServerEndPoint {
                 session.close();
                 return;
             }
-
         } else if (pathPrm.get("userAgent").contains("androidClient") &&
                 (null != roomParticipant || null == roomParticipant[1] || null == roomParticipant[2])) {
             String post = iSocketConnectionManager.updateRoom("main", sessionId, "addMc");
@@ -52,15 +52,15 @@ public class IServerEndPoint {
             Set<Session> sessions = session.getOpenSessions();
             Session[] sesArr = sessions.toArray(new Session[3]);
             if (sessions.size() == 3) {
-                byte[] fpPic =iSocketConnectionManager.getPicBytes(firstPlayer);
-                byte[] spPic =iSocketConnectionManager.getPicBytes(secondPlayer);
+                byte[] fpPic = iSocketConnectionManager.getPicBytes(firstPlayer);
+                byte[] spPic = iSocketConnectionManager.getPicBytes(secondPlayer);
                 try {
-                    PicFbo picFboF= new PicFbo().setUserName(firstPlayer).setB64(iwMessageEcoder.toB64(fpPic)).setPos("f");
-                    PicFbo picFboS= new PicFbo().setUserName(secondPlayer).setB64(iwMessageEcoder.toB64(spPic)).setPos("s");
+                    PicFbo picFboF = new PicFbo().setUserName(firstPlayer).setB64(iwMessageEcoder.toB64(fpPic)).setPos("f");
+                    PicFbo picFboS = new PicFbo().setUserName(secondPlayer).setB64(iwMessageEcoder.toB64(spPic)).setPos("s");
                     sesArr[0].getBasicRemote().sendObject(iwMessageEcoder.jsonify(picFboF));
                     sesArr[0].getBasicRemote().sendObject(iwMessageEcoder.jsonify(picFboS));
-                    sesArr[1].getUserProperties().put("userName",firstPlayer);
-                    sesArr[2].getUserProperties().put("userName",secondPlayer);
+                    sesArr[1].getUserProperties().put("userName", firstPlayer);
+                    sesArr[2].getUserProperties().put("userName", secondPlayer);
                 } catch (EncodeException e) {
                     e.printStackTrace();
                 }
@@ -83,7 +83,7 @@ public class IServerEndPoint {
                     && rId.equals(s.getUserProperties().get("roomName"))) {
                 try {
                     iSocketConnectionManager.updateRoom(rId, s.getId(), "remove");
-                    if(null ==s.getUserProperties().get("roomManager")) {
+                    if (null == s.getUserProperties().get("roomManager")) {
                         s.close();
                     }
 
@@ -120,6 +120,8 @@ public class IServerEndPoint {
                 }
             }
             session.getBasicRemote().sendText(stringBuilder.toString());
+        } else if (string.contains("results")) {
+               registerResults(string,session);
         } else {
             //registret client handle message
             String rId = (String) session.getUserProperties().get("roomName");
@@ -137,6 +139,22 @@ public class IServerEndPoint {
         }
 
 
+    }
+
+    private void registerResults(String string, Session session) {
+        String[] results= string.split(":");
+        JSONObject jsonObjectf = new JSONObject();
+        JSONObject jsonObjects = new JSONObject();
+        jsonObjectf.put("userName",results[1]);
+        jsonObjectf.put("score",results[2]);
+        jsonObjects.put("userName",results[3]);
+        jsonObjects.put("score",results[4]);
+        if (dbClient.contains("Player Name Here")) {
+            dbClient.update(jsonObjectf);
+        }else {
+            dbClient.save(jsonObjectf);
+        }
+       // Response response=dbClient.save( );
     }
 
 }
