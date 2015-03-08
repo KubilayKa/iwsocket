@@ -171,12 +171,18 @@ public class IServerEndPoint {
 
     private JSONObject updateStats(JSONObject object, JSONObject oldRecord) {
         JSONObject tmp=oldRecord;
-        int oScore=(int)oldRecord.get("score");
+        double oScore=(double)oldRecord.get("score");
         int nScore=(int)object.get("score");
         oldRecord.put("score",oScore+nScore);
-        oldRecord.put("win",(double)object.get("win")+(double)tmp.get("win"));
-        oldRecord.put("lost",(double)object.get("lost")+(double)tmp.get("lost"));
-        oldRecord.put("draw",(double)object.get("draw")+(double)tmp.get("draw"));
+        int  oWin=(int)object.get("win");
+        double nWin=(double)tmp.get("win");
+        oldRecord.put("win",oWin+nWin);
+        int oLost=(int)object.get("lost");
+        double nLost=(double)tmp.get("lost");
+        oldRecord.put("lost",oLost+nLost);
+        int oDraw=(int)object.get("draw");
+        double nDraw=(double)tmp.get("draw");
+        oldRecord.put("draw",oDraw+nDraw);
         return oldRecord;
 
     }
@@ -187,10 +193,13 @@ public class IServerEndPoint {
           if(fScore>sScore) {
               objects[0].put("win",1);
               objects[1].put("lost",1);
-          }else {
+          }else if( fScore <sScore) {
               objects[0].put("lost",1);
               objects[1].put("win",1);
-          }
+          } else {
+              objects[0].put("draw",1);
+              objects[1].put("draw",1);
+        }
     }
 
 }
