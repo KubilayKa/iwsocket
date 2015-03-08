@@ -160,7 +160,7 @@ public class IServerEndPoint {
         jsonObjects.put("draw",results[4]);
 
         JSONObject[] objects={jsonObjectf,jsonObjects};
-        for(int i=0;i<3;i++){
+        for(int i=0;i<objects.length;i++){
             if (dbClient.contains((String)objects[i].get("_id"))) {
                 dbClient.update(objects[i]);
             }else {
