@@ -158,10 +158,10 @@ public class IServerEndPoint {
         jsonObjects.put("win",results[4]);
         jsonObjects.put("lost",results[4]);
         jsonObjects.put("draw",results[4]);
-        String[] persons={person1,person2};
+
         JSONObject[] objects={jsonObjectf,jsonObjects};
-        for(int i=0;i<2;i++){
-            if (dbClient.contains(persons[i])) {
+        for(int i=0;i<3;i++){
+            if (dbClient.contains((String)objects[i].get("_id"))) {
                 dbClient.update(objects[i]);
             }else {
                 dbClient.save(objects[i]);
