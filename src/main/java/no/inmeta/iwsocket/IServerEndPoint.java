@@ -143,17 +143,31 @@ public class IServerEndPoint {
 
     private void registerResults(String string, Session session) {
         String[] results= string.split(":");
+        String person1=results[1];
+        String person2=results[3];
+
         JSONObject jsonObjectf = new JSONObject();
         JSONObject jsonObjects = new JSONObject();
-        jsonObjectf.put("userName",results[1]);
+        jsonObjectf.put("_id",person1);
         jsonObjectf.put("score",results[2]);
-        jsonObjects.put("userName",results[3]);
+        jsonObjectf.put("win",results[2]);
+        jsonObjectf.put("lost",results[2]);
+        jsonObjectf.put("draw",results[2]);
+        jsonObjects.put("_id",person2);
         jsonObjects.put("score",results[4]);
-        if (dbClient.contains("Player Name Here")) {
-            dbClient.update(jsonObjectf);
-        }else {
-            dbClient.save(jsonObjectf);
+        jsonObjects.put("win",results[4]);
+        jsonObjects.put("lost",results[4]);
+        jsonObjects.put("draw",results[4]);
+        String[] persons={person1,person2};
+        JSONObject[] objects={jsonObjectf,jsonObjects};
+        for(int i=0;i<2;i++){
+            if (dbClient.contains(persons[i])) {
+                dbClient.update(objects[i]);
+            }else {
+                dbClient.save(objects[i]);
+            }
         }
+
        // Response response=dbClient.save( );
     }
 
