@@ -4,11 +4,7 @@ package no.inmeta.iwsocket;
 import org.json.simple.JSONObject;
 import org.lightcouch.CouchDbClient;
 
-import javax.websocket.EncodeException;
-import javax.websocket.OnClose;
-import javax.websocket.OnMessage;
-import javax.websocket.OnOpen;
-import javax.websocket.Session;
+import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
 import java.util.Map;
@@ -149,26 +145,52 @@ public class IServerEndPoint {
         JSONObject jsonObjectf = new JSONObject();
         JSONObject jsonObjects = new JSONObject();
         jsonObjectf.put("_id",person1);
-        jsonObjectf.put("score",results[2]);
-        jsonObjectf.put("win",results[2]);
-        jsonObjectf.put("lost",results[2]);
-        jsonObjectf.put("draw",results[2]);
+        jsonObjectf.put("score",Integer.parseInt(results[2]));
+        jsonObjectf.put("win",0);
+        jsonObjectf.put("lost",0);
+        jsonObjectf.put("draw",0);
         jsonObjects.put("_id",person2);
-        jsonObjects.put("score",results[4]);
-        jsonObjects.put("win",results[4]);
-        jsonObjects.put("lost",results[4]);
-        jsonObjects.put("draw",results[4]);
+        jsonObjects.put("score",Integer.parseInt(results[4]));
+        jsonObjects.put("win",0);
+        jsonObjects.put("lost",0);
+        jsonObjects.put("draw",0);
 
         JSONObject[] objects={jsonObjectf,jsonObjects};
+        generateStats(objects);
         for(int i=0;i<objects.length;i++){
-            if (dbClient.contains((String)objects[i].get("_id"))) {
-                dbClient.update(objects[i]);
+            String id=(String)objects[i].get("_id");
+            if (dbClient.contains(id)) {
+                dbClient.update(updateStats(objects[i], dbClient.find(JSONObject.class,id)));
             }else {
                 dbClient.save(objects[i]);
             }
         }
 
        // Response response=dbClient.save( );
+    }
+
+    private JSONObject updateStats(JSONObject object, JSONObject oldRecord) {
+        JSONObject tmp=oldRecord;
+        int oScore=(int)oldRecord.get("score");
+        int nScore=(int)object.get("score");
+        oldRecord.put("score",oScore+nScore);
+        oldRecord.put("win",(double)object.get("win")+(double)tmp.get("win"));
+        oldRecord.put("lost",(double)object.get("lost")+(double)tmp.get("lost"));
+        oldRecord.put("draw",(double)object.get("draw")+(double)tmp.get("draw"));
+        return oldRecord;
+
+    }
+
+    private void generateStats(JSONObject[] objects) {
+        int fScore= (int) objects[0].get("score");
+        int sScore= (int) objects[1].get("score");
+          if(fScore>sScore) {
+              objects[0].put("win",1);
+              objects[1].put("lost",1);
+          }else {
+              objects[0].put("lost",1);
+              objects[1].put("win",1);
+          }
     }
 
 }
