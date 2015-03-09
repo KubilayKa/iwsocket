@@ -32,15 +32,15 @@ public class IServerEndPoint {
         String roomParticipant[] = iSocketConnectionManager.getRoomById("main");
         // Response response=dbClient.save(new JsonParser().parse("{\"udidit\":\"true\"}").getAsJsonObject());
         if (pathPrm.get("userAgent").contains("browserClient")) {
-            if (null == roomParticipant || null == roomParticipant[0]) {
+            if (null == roomParticipant || null == roomParticipant[0] || "".equals(roomParticipant[0])) {
                 session.getUserProperties().put("roomName", "main");
-                session.getUserProperties().put("roomManager", "main");
+                session.getUserProperties().put("roomManager","yes");
                 iSocketConnectionManager.initRoom(sessionId, "main");
             } else {
                 session.close();
                 return;
             }
-        } else if (pathPrm.get("userAgent").contains("androidClient") &&
+        } else if (pathPrm.get("userAgent").contains("androidClient") && null != roomParticipant[0] &&
                 (null != roomParticipant || null == roomParticipant[1] || null == roomParticipant[2])) {
             String post = iSocketConnectionManager.updateRoom("main", sessionId, "addMc");
             session.getUserProperties().put("pp", post);
@@ -118,7 +118,9 @@ public class IServerEndPoint {
             session.getBasicRemote().sendText(stringBuilder.toString());
         } else if (string.contains("results")) {
                registerResults(string,session);
-        } else {
+        }  else if (string.equals("gameover")) {
+             killCon(session);
+        }else {
             //registret client handle message
             String rId = (String) session.getUserProperties().get("roomName");
             try {
@@ -135,6 +137,16 @@ public class IServerEndPoint {
         }
 
 
+    }
+
+    private void killCon(Session session) throws IOException {
+    for(Session s:session.getOpenSessions()) {
+       String isManager= (String) s.getUserProperties().get("roomManager");
+        if (s.isOpen() && null == isManager ){
+            iSocketConnectionManager.updateRoom("main",s.getId(),"remove");
+            s.close();
+        }
+    }
     }
 
     private void registerResults(String string, Session session) {

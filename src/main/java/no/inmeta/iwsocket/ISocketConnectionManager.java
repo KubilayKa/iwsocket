@@ -1,13 +1,11 @@
 package no.inmeta.iwsocket;
 
-import javax.websocket.Session;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Logger;
 
 /**
@@ -39,13 +37,6 @@ public class ISocketConnectionManager {
         return roomList;
     }
 
-    public boolean isRoomExists(String playerName) {
-        for (String s : roomList.keySet()) {
-            if (s.contains(playerName))
-                return true;
-        }
-        return false;
-    }
 
     public String updateRoom(String roomName, String sessionId, String type) {
         if (type.equals("addMc")) {
@@ -57,13 +48,13 @@ public class ISocketConnectionManager {
                 return "r:";
             }
         } else if (type.equals("addBc")) {
-            roomList.get(roomName)[2] = sessionId;
+            roomList.get(roomName)[0] = sessionId;
             return "bc added";
         } else if (type.equals("remove")) {
             String[] clients = roomList.get(roomName);
-            for (int i = 1; i < clients.length; i++) {
+            for (int i = 0; i < clients.length; i++) {
                 if (clients[i].equals(sessionId))
-                    clients[i] = null;
+                    roomList.remove(sessionId);
             }
             return "list cleared";
         }
@@ -74,18 +65,10 @@ public class ISocketConnectionManager {
         return logger;
     }
 
-    public void handleMessage(Session session, String msg) {
-        //TODO: sjekk om mc eller bc rediger til om den har ikke rom dediser et rom
-        //TODO: legg inn logikk f
-    }
-
     private final static Map<String, String[]> roomList = new HashMap<>();
 
 
-    public Set<String> getRoomNames() {
 
-        return roomList.keySet();
-    }
 
     public String[] getRoomById(String s) {
         return roomList.get(s);
@@ -108,9 +91,6 @@ public class ISocketConnectionManager {
 
     }
 
-    public static void deleteRoom(String rId) {
-        roomList.remove(rId);
-    }
 
     public byte[] getPicBytes(String s) throws IOException {
         URL picUrl=getClass().getClassLoader().getResource("employeeimages" + File.separator + s.toLowerCase() + ".jpg");

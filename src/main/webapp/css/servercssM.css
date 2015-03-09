@@ -43,17 +43,17 @@ body {
 }
 #leftDrawer{
 
-    background-color: rgba(40, 40, 40, 0.70);
+    background-color: rgba(40, 40, 40, 0.80);
     position: absolute;
     visibility: hidden;
-    top: 0;
+    top: 20px;
     left: 0px;
 }
 #rightDrawer{
-    background-color: #000000 ;opacity: .5;
+    background-color: rgba(40, 40, 40, 0.80);
     position: absolute;
     visibility: hidden;
-    top: 0;
+    top: 20px;
     right: 0px;
 }
 #nameOfTheGame {
@@ -68,7 +68,10 @@ body {
     position: absolute;
 
     }
-
+.statL , .statR {
+    font-size: 25px;
+    padding-top : 10px;
+    }
 .infoWrap{
     width: inherit;
     align-content: center;

@@ -62,20 +62,24 @@
                     console.log("er i l:")
                     if ($('#leftDrawer').width() > 50) {
                         $('#leftDrawer').css({"width": ((width - 150) / 3), "height": ( height - 50)  }).animate({width: '0px', visibility: "hidden" }, "slow");
-                        $('.drawerName').css({"visibility": "hidden"});
+                        $('.drawerNameL').css({"visibility": "hidden"});
+                        $('.statL').css({"visibility": "hidden"});
 
                     } else {
                         $('#leftDrawer').css({"width": ((width - 150) / 3), "height": ( height - 50), "visibility": "visible"  }).animate({width: width / 3}, "slow")
-                        $('.drawerName').css({"visibility": "visible", "color": "white", "marginLeft": (width - 150) / 7});
+                        $('.drawerNameL').css({"visibility": "visible", "color": "white", "marginLeft": (width - 150) / 7});
+                        $('.statL').css({"visibility": "visible", "color": "white", "marginLeft": 50 });
                     }
                 }
                 else {
                     if ($('#rightDrawer').width() > 50) {
                         $('#rightDrawer').css({"width": ((width - 150) / 3), "height": ( height - 50)  }).animate({width: '0px', visibility: "hidden" }, "slow");
-                        $('.drawerName').css({"visibility": "hidden"});
+                        $('.drawerNameR').css({"visibility": "hidden"});
+                        $('.statR').css({"visibility": "hidden"});
                     } else {
                         $('#rightDrawer').css({"width": ((width - 150) / 3), "height": ( height - 50), "visibility": "visible"  }).animate({width: width / 3}, "slow")
-                        $('.drawerName').css({"visibility": "visible", "color": "white", "marginLeft": (width - 150) / 7});
+                        $('.drawerNameR').css({"visibility": "visible", "color": "white", "marginLeft": (width - 150) / 7});
+                        $('.statR').css({"visibility": "visible", "color": "white","marginLeft": 50  });
                     }
                 }
 
@@ -123,6 +127,7 @@
                 var rResult=counterR.getTime().time;
 
                 ws.send("results:"+$("#fPlayerName").text()+":"+lResult+":"+$("#sPlayerName").text()+":"+rResult);
+                ws.send("gameover");
             }}});
         var fCSize = $('.flip-clock-wrapper').width();
         var pad = ((width - 50) / 2) / 4;
