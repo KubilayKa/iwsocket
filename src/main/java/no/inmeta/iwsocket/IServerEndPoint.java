@@ -71,22 +71,11 @@ public class IServerEndPoint {
 
     @OnClose
     public void onClose(Session session) {
-        String rId = (String) session.getUserProperties().get("roomName");
-        String[] clients = iSocketConnectionManager.getRoomById(rId);
 
-        for (Session s : session.getOpenSessions()) {
-            if (s.isOpen()
-                    && rId.equals(s.getUserProperties().get("roomName"))) {
-                try {
-                    iSocketConnectionManager.updateRoom(rId, s.getId(), "remove");
-                    if (null == s.getUserProperties().get("roomManager")) {
-                        s.close();
-                    }
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+        try {
+            killCon(session);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
     }
@@ -95,17 +84,8 @@ public class IServerEndPoint {
     public void onMessaege(String string, Session session) throws IOException {
 
         if (string.equals("clear")) {
-            String sessionRoomName = (String) session.getUserProperties().get("roomName");
-            String[] sessionIds = iSocketConnectionManager.getRoomById(sessionRoomName);
-            for (String sessionId : sessionIds) {
-                Set<Session> sessions = session.getOpenSessions();
-                for (Session s : sessions) {
-                    if (s.isOpen() || s.getId().equals(sessionId)) {
-                        s.close();
-                    }
-                }
-            }
-            iSocketConnectionManager.clearRoomList();
+            killCon(session);
+
         } else if (string.equals("clients")) {
             Map<String, String[]> list = iSocketConnectionManager.getRoomList();
             StringBuilder stringBuilder = new StringBuilder("clist");
@@ -133,7 +113,7 @@ public class IServerEndPoint {
                 }
             } catch (IOException e) {
                 e.printStackTrace();
-            } /* */
+            }
         }
 
 
@@ -143,8 +123,8 @@ public class IServerEndPoint {
     for(Session s:session.getOpenSessions()) {
        String isManager= (String) s.getUserProperties().get("roomManager");
         if (s.isOpen() && null == isManager ){
-            iSocketConnectionManager.updateRoom("main",s.getId(),"remove");
             s.close();
+            iSocketConnectionManager.updateRoom("main", s.getId(), "remove");
         }
     }
     }

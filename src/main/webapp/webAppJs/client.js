@@ -5,6 +5,7 @@
     var counter;
     var counterL;
     var counterR;
+    var isStarted=false;
 
     var url = location.href;
     var paramRaw = url.split(":)");
@@ -24,12 +25,14 @@
         ws.send("bc:" + url.split("?")[1]);
     };
     ws.onmessage = function (evt) {
-        console.log(evt.data)
+
         var received_msg = evt.data;
+        console.log("message:", received_msg);
         var jsonson= undefined;
-         if(received_msg.length > 20) {
+         if(received_msg.length > 30 && received_msg.indexOf("b64")>-1) {
              jsonson =JSON.parse(received_msg);
          }
+
         if (  undefined != jsonson && undefined != jsonson.userName ) {
             var picfbo={userName:"",b64:"",player:"",pos:""}
             console.log("in jsonson")
@@ -121,14 +124,17 @@
 
         counterL = $('.counterL').FlipClock(2,{clockFace: 'Counter' });
         counterR = $('.counterR').FlipClock(3 , {clockFace: 'Counter' });
-        counter = $('.counter').FlipClock(5, {clockFace: 'MinuteCounter', countdown: true, hideLabels: "true",autoStart:true,
+        counter = $('.counter').FlipClock(0, {clockFace: 'MinuteCounter', countdown: true, hideLabels: "true",autoStart:false,
             callbacks:{stop:function(){
-                var lResult=counterL.getTime().time;
-                var rResult=counterR.getTime().time;
+                if(isStarted){
+                    var lResult=counterL.getTime().time;
+                    var rResult=counterR.getTime().time;
+                    ws.send("results:"+$("#fPlayerName").text()+":"+lResult+":"+$("#sPlayerName").text()+":"+rResult);
+                    ws.send("gameover");
+                    isStarted=false;
+                }
 
-                ws.send("results:"+$("#fPlayerName").text()+":"+lResult+":"+$("#sPlayerName").text()+":"+rResult);
-                ws.send("gameover");
-            }}});
+            },start:function(){isStarted=true;}}});
         var fCSize = $('.flip-clock-wrapper').width();
         var pad = ((width - 50) / 2) / 4;
         var centerPad = ((width - fCSize) / 2) + 20;

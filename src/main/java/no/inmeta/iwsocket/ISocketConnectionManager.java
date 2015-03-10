@@ -34,7 +34,8 @@ public class ISocketConnectionManager {
     }
 
     public static Map<String, String[]> getRoomList() {
-        return roomList;
+        Map<String,String[]> listCopy=roomList;
+        return listCopy;
     }
 
 
@@ -54,7 +55,7 @@ public class ISocketConnectionManager {
             String[] clients = roomList.get(roomName);
             for (int i = 0; i < clients.length; i++) {
                 if (clients[i].equals(sessionId))
-                    roomList.remove(sessionId);
+                    roomList.get(roomName)[i]=null;
             }
             return "list cleared";
         }
@@ -65,7 +66,7 @@ public class ISocketConnectionManager {
         return logger;
     }
 
-    private final static Map<String, String[]> roomList = new HashMap<>();
+    private  static Map<String, String[]> roomList = new HashMap<>();
 
 
 
@@ -83,12 +84,6 @@ public class ISocketConnectionManager {
             }
         }
         return false;
-    }
-
-    public void clearRoomList() {
-
-        roomList.clear();
-
     }
 
 
