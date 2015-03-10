@@ -10,6 +10,7 @@ public class PicFbo implements Serializable {
     private String userName;
     private String b64;
     private String pos;
+    private String stat;
 
     public String getB64() {
         return b64;
@@ -35,5 +36,15 @@ public class PicFbo implements Serializable {
 
     public String getPos() {
         return pos;
+    }
+
+    public String getStat() {
+        return stat;
+    }
+
+    public PicFbo setStat(String stat) {
+        this.stat = stat;
+
+        return this;
     }
 }

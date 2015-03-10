@@ -34,8 +34,9 @@ public class IServerEndPoint {
         if (pathPrm.get("userAgent").contains("browserClient")) {
             if (null == roomParticipant || null == roomParticipant[0] || "".equals(roomParticipant[0])) {
                 session.getUserProperties().put("roomName", "main");
-                session.getUserProperties().put("roomManager","yes");
+                session.getUserProperties().put("roomManager", "yes");
                 iSocketConnectionManager.initRoom(sessionId, "main");
+
             } else {
                 session.close();
                 return;
@@ -47,12 +48,22 @@ public class IServerEndPoint {
             session.getUserProperties().put("roomName", "main");
             Set<Session> sessions = session.getOpenSessions();
             Session[] sesArr = sessions.toArray(new Session[3]);
-            if (null != sesArr[1] && null!= sesArr[2]) {
+            if (null != sesArr[1] && null != sesArr[2]) {
+
                 byte[] fpPic = iSocketConnectionManager.getPicBytes(firstPlayer);
                 byte[] spPic = iSocketConnectionManager.getPicBytes(secondPlayer);
                 try {
-                    PicFbo picFboF = new PicFbo().setUserName(firstPlayer).setB64(iwMessageEcoder.toB64(fpPic)).setPos("f");
-                    PicFbo picFboS = new PicFbo().setUserName(secondPlayer).setB64(iwMessageEcoder.toB64(spPic)).setPos("s");
+                    JSONObject  firsJSObject= new JSONObject();
+                    JSONObject  secondJSObject= new JSONObject();
+                    if (dbClient.contains(firstPlayer)) {
+                         firsJSObject = dbClient.find(JSONObject.class, firstPlayer);
+                    }
+                    if (dbClient.contains(secondPlayer)) {
+                          secondJSObject = dbClient.find(JSONObject.class, firstPlayer);
+                    }
+                    PicFbo picFboF = new PicFbo().setUserName(firstPlayer).setB64(iwMessageEcoder.toB64(fpPic)).setPos("f").setStat(firsJSObject.toString());
+                    PicFbo picFboS = new PicFbo().setUserName(secondPlayer).setB64(iwMessageEcoder.toB64(spPic)).setPos("s").setStat(secondJSObject.toString());
+
                     sesArr[0].getBasicRemote().sendObject(iwMessageEcoder.jsonify(picFboF));
                     sesArr[0].getBasicRemote().sendObject(iwMessageEcoder.jsonify(picFboS));
                     sesArr[1].getUserProperties().put("userName", firstPlayer);
@@ -97,10 +108,10 @@ public class IServerEndPoint {
             }
             session.getBasicRemote().sendText(stringBuilder.toString());
         } else if (string.contains("results")) {
-               registerResults(string,session);
-        }  else if (string.equals("gameover")) {
-             killCon(session);
-        }else {
+            registerResults(string, session);
+        } else if (string.equals("gameover")) {
+            killCon(session);
+        } else {
             //registret client handle message
             String rId = (String) session.getUserProperties().get("roomName");
             try {
@@ -120,77 +131,77 @@ public class IServerEndPoint {
     }
 
     private void killCon(Session session) throws IOException {
-    for(Session s:session.getOpenSessions()) {
-       String isManager= (String) s.getUserProperties().get("roomManager");
-        if (s.isOpen() && null == isManager ){
-            s.close();
-            iSocketConnectionManager.updateRoom("main", s.getId(), "remove");
+        for (Session s : session.getOpenSessions()) {
+            String isManager = (String) s.getUserProperties().get("roomManager");
+            if (s.isOpen() && null == isManager) {
+                s.close();
+                iSocketConnectionManager.updateRoom("main", s.getId(), "remove");
+            }
         }
-    }
     }
 
     private void registerResults(String string, Session session) {
-        String[] results= string.split(":");
-        String person1=results[1];
-        String person2=results[3];
+        String[] results = string.split(":");
+        String person1 = results[1];
+        String person2 = results[3];
 
         JSONObject jsonObjectf = new JSONObject();
         JSONObject jsonObjects = new JSONObject();
-        jsonObjectf.put("_id",person1);
-        jsonObjectf.put("score",Integer.parseInt(results[2]));
-        jsonObjectf.put("win",0);
-        jsonObjectf.put("lost",0);
-        jsonObjectf.put("draw",0);
-        jsonObjects.put("_id",person2);
-        jsonObjects.put("score",Integer.parseInt(results[4]));
-        jsonObjects.put("win",0);
-        jsonObjects.put("lost",0);
-        jsonObjects.put("draw",0);
+        jsonObjectf.put("_id", person1);
+        jsonObjectf.put("score", Integer.parseInt(results[2]));
+        jsonObjectf.put("win", 0);
+        jsonObjectf.put("lost", 0);
+        jsonObjectf.put("draw", 0);
+        jsonObjects.put("_id", person2);
+        jsonObjects.put("score", Integer.parseInt(results[4]));
+        jsonObjects.put("win", 0);
+        jsonObjects.put("lost", 0);
+        jsonObjects.put("draw", 0);
 
-        JSONObject[] objects={jsonObjectf,jsonObjects};
+        JSONObject[] objects = {jsonObjectf, jsonObjects};
         generateStats(objects);
-        for(int i=0;i<objects.length;i++){
-            String id=(String)objects[i].get("_id");
+        for (int i = 0; i < objects.length; i++) {
+            String id = (String) objects[i].get("_id");
             if (dbClient.contains(id)) {
-                dbClient.update(updateStats(objects[i], dbClient.find(JSONObject.class,id)));
-            }else {
+                dbClient.update(updateStats(objects[i], dbClient.find(JSONObject.class, id)));
+            } else {
                 dbClient.save(objects[i]);
             }
         }
 
-       // Response response=dbClient.save( );
+        // Response response=dbClient.save( );
     }
 
     private JSONObject updateStats(JSONObject object, JSONObject oldRecord) {
-        JSONObject tmp=oldRecord;
-        double oScore=(double)oldRecord.get("score");
-        int nScore=(int)object.get("score");
-        oldRecord.put("score",oScore+nScore);
-        int  oWin=(int)object.get("win");
-        double nWin=(double)tmp.get("win");
-        oldRecord.put("win",oWin+nWin);
-        int oLost=(int)object.get("lost");
-        double nLost=(double)tmp.get("lost");
-        oldRecord.put("lost",oLost+nLost);
-        int oDraw=(int)object.get("draw");
-        double nDraw=(double)tmp.get("draw");
-        oldRecord.put("draw",oDraw+nDraw);
+        JSONObject tmp = oldRecord;
+        double oScore = (double) oldRecord.get("score");
+        int nScore = (int) object.get("score");
+        oldRecord.put("score", oScore + nScore);
+        int oWin = (int) object.get("win");
+        double nWin = (double) tmp.get("win");
+        oldRecord.put("win", oWin + nWin);
+        int oLost = (int) object.get("lost");
+        double nLost = (double) tmp.get("lost");
+        oldRecord.put("lost", oLost + nLost);
+        int oDraw = (int) object.get("draw");
+        double nDraw = (double) tmp.get("draw");
+        oldRecord.put("draw", oDraw + nDraw);
         return oldRecord;
 
     }
 
     private void generateStats(JSONObject[] objects) {
-        int fScore= (int) objects[0].get("score");
-        int sScore= (int) objects[1].get("score");
-          if(fScore>sScore) {
-              objects[0].put("win",1);
-              objects[1].put("lost",1);
-          }else if( fScore <sScore) {
-              objects[0].put("lost",1);
-              objects[1].put("win",1);
-          } else {
-              objects[0].put("draw",1);
-              objects[1].put("draw",1);
+        int fScore = (int) objects[0].get("score");
+        int sScore = (int) objects[1].get("score");
+        if (fScore > sScore) {
+            objects[0].put("win", 1);
+            objects[1].put("lost", 1);
+        } else if (fScore < sScore) {
+            objects[0].put("lost", 1);
+            objects[1].put("win", 1);
+        } else {
+            objects[0].put("draw", 1);
+            objects[1].put("draw", 1);
         }
     }
 

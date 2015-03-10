@@ -1,23 +1,20 @@
 {
     var height = $(document).height();
     var width = $(document).width();
-    console.log("w:" + width + "h:" + height)
     var counter;
     var counterL;
     var counterR;
+    var statF;
+    var statS;
     var isStarted=false;
-
     var url = location.href;
     var paramRaw = url.split(":)");
     if ("undefined" === paramRaw || paramRaw.length == 1) {
         paramRaw = ["", "main&main"]
-
     }
-
     var paramsAndVal = paramRaw[1].split("&");
     var firstPlayer = paramsAndVal[0];
     var secondPlayer = paramsAndVal[1];
-
     var ws = new WebSocket("ws://localhost:8080/iwsocket/inbound/browserClient/" + firstPlayer + "/" + secondPlayer);
     ws.onopen = function () {
         // Web Socket is connected, send data using send()
@@ -25,7 +22,6 @@
         ws.send("bc:" + url.split("?")[1]);
     };
     ws.onmessage = function (evt) {
-
         var received_msg = evt.data;
         console.log("message:", received_msg);
         var jsonson= undefined;
@@ -34,18 +30,22 @@
          }
 
         if (  undefined != jsonson && undefined != jsonson.userName ) {
-            var picfbo={userName:"",b64:"",player:"",pos:""}
-            console.log("in jsonson")
+            var picfbo={userName:"",b64:"",player:"",pos:"",stats:""}
+
             picfbo.userName = jsonson.userName;
             picfbo.b64 = jsonson.b64;
             picfbo.pos= jsonson.pos;
             if(picfbo.pos === "f") {
                 $("#fPlayerName").text(picfbo.userName);   console.log("fir")
                 document.getElementById("player1Img").src = picfbo.b64;
+                statF=picfbo.stats;
+                console.log("stats",statF);
             }
             else {
                 $("#sPlayerName").text(picfbo.userName);console.log("sec")
                 document.getElementById("player2Img").src = picfbo.b64;
+                statS=picfbo.stats;
+                console.log("stats",statS);
             }
         } else {
             if (received_msg.indexOf("inc") > -1) {
@@ -124,7 +124,7 @@
 
         counterL = $('.counterL').FlipClock(2,{clockFace: 'Counter' });
         counterR = $('.counterR').FlipClock(3 , {clockFace: 'Counter' });
-        counter = $('.counter').FlipClock(0, {clockFace: 'MinuteCounter', countdown: true, hideLabels: "true",autoStart:false,
+        counter = $('.counter').FlipClock(3, {clockFace: 'MinuteCounter', countdown: true, hideLabels: "true",autoStart:true,
             callbacks:{stop:function(){
                 if(isStarted){
                     var lResult=counterL.getTime().time;
