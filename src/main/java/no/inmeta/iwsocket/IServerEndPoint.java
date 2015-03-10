@@ -47,7 +47,7 @@ public class IServerEndPoint {
             session.getUserProperties().put("roomName", "main");
             Set<Session> sessions = session.getOpenSessions();
             Session[] sesArr = sessions.toArray(new Session[3]);
-            if (sessions.size() == 3) {
+            if (null != sesArr[1] && null!= sesArr[2]) {
                 byte[] fpPic = iSocketConnectionManager.getPicBytes(firstPlayer);
                 byte[] spPic = iSocketConnectionManager.getPicBytes(secondPlayer);
                 try {

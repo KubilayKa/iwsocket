@@ -53,10 +53,9 @@ public class ISocketConnectionManager {
             return "bc added";
         } else if (type.equals("remove")) {
             String[] clients = roomList.get(roomName);
-            for (int i = 0; i < clients.length; i++) {
-                if (clients[i].equals(sessionId))
-                    roomList.get(roomName)[i]=null;
-            }
+
+            roomList.remove("main");
+            initRoom(clients[0],"main");
             return "list cleared";
         }
         return "unknown operation";
