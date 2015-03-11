@@ -48,6 +48,10 @@ public class IServerEndPoint {
             session.getUserProperties().put("roomName", "main");
             Set<Session> sessions = session.getOpenSessions();
             Session[] sesArr = sessions.toArray(new Session[3]);
+            sesArr[1].getUserProperties().put("userName", firstPlayer);
+            sesArr[2].getUserProperties().put("userName", secondPlayer);
+            sesArr[1].getUserProperties().put("roomManager", "no");
+            sesArr[2].getUserProperties().put("roomManager","no");
             if (null != sesArr[1] && null != sesArr[2]) {
                 byte[] fpPic = iSocketConnectionManager.getPicBytes(firstPlayer);
                 byte[] spPic = iSocketConnectionManager.getPicBytes(secondPlayer);
@@ -63,14 +67,14 @@ public class IServerEndPoint {
                     PicFbo picFboF = new PicFbo().setUserName(firstPlayer).setB64(iwMessageEcoder.toB64(fpPic)).setPos("f").setStat(firsJSObject.toString());
                     PicFbo picFboS = new PicFbo().setUserName(secondPlayer).setB64(iwMessageEcoder.toB64(spPic)).setPos("s").setStat(secondJSObject.toString());
                     for (Session s:sesArr) {
-                        if (s.getUserProperties().get("roomManager").equals("yes")) {
+                        String str= (String) s.getUserProperties().get("roomManager");
+                        if (null != str && str.equals("yes")) {
                             s.getBasicRemote().sendObject(iwMessageEcoder.jsonify(picFboF));
                             s.getBasicRemote().sendObject(iwMessageEcoder.jsonify(picFboS));
                         }
                     }
 
-                    sesArr[1].getUserProperties().put("userName", firstPlayer);
-                    sesArr[2].getUserProperties().put("userName", secondPlayer);
+
                 } catch (EncodeException e) {
                     e.printStackTrace();
                 }
@@ -136,7 +140,7 @@ public class IServerEndPoint {
     private void killCon(Session session) throws IOException {
         for (Session s : session.getOpenSessions()) {
             String isManager = (String) s.getUserProperties().get("roomManager");
-            if (s.isOpen() && null == isManager) {
+            if (s.isOpen() && isManager.equals("no")) {
                 s.close();
                 iSocketConnectionManager.updateRoom("main", s.getId(), "remove");
             }
