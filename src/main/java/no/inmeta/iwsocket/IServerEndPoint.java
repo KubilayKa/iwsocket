@@ -138,6 +138,8 @@ public class IServerEndPoint {
                 iSocketConnectionManager.updateRoom("main", s.getId(), "remove");
             }
         }
+        Session[] sessArr= (Session[]) session.getOpenSessions().toArray(new Session[1]);
+        sessArr[0].getBasicRemote().sendText("maintain");
     }
 
     private void registerResults(String string, Session session) {

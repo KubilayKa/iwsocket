@@ -22,6 +22,7 @@
         ws.send("bc:" + url.split("?")[1]);
     };
     ws.onmessage = function (evt) {
+
         var received_msg = evt.data;
         console.log("message:", received_msg);
         var jsonson= undefined;
@@ -36,13 +37,13 @@
             picfbo.b64 = jsonson.b64;
             picfbo.pos= jsonson.pos;
             if(picfbo.pos === "f") {
-                $("#fPlayerName").text(picfbo.userName);   console.log("fir")
+                $("#fPlayerName").text(picfbo.userName);
                 document.getElementById("player1Img").src = picfbo.b64;
                 statF=picfbo.stats;
                 console.log("stats",statF);
             }
             else {
-                $("#sPlayerName").text(picfbo.userName);console.log("sec")
+                $("#sPlayerName").text(picfbo.userName);
                 document.getElementById("player2Img").src = picfbo.b64;
                 statS=picfbo.stats;
                 console.log("stats",statS);
@@ -94,11 +95,16 @@
             } else if (received_msg.indexOf("restart:") > -1 || received_msg.indexOf("start:") > -1) {
                 counter.start();
             } else if (received_msg.indexOf("pause:") > -1) {
-                console.log("er i pause:")
+
                 counter.stop();
 
-            }  else if (received_msg.indexOf("db:") > -1) {
-                alert("u did it dude" + "\n" + received_msg)
+            }  else if (received_msg.indexOf("maintain") > -1) {
+                document.getElementById("player1Img").src =" img/user-ic2.png";
+                document.getElementById("player2Img").src = " img/user-ic.png";
+                $("#fPlayerName").text("Player 1");
+                $("#sPlayerName").text("Player 2");
+                counterL.reset();
+                counterR.reset();
             }
         }
 
@@ -124,7 +130,7 @@
 
         counterL = $('.counterL').FlipClock(2,{clockFace: 'Counter' });
         counterR = $('.counterR').FlipClock(3 , {clockFace: 'Counter' });
-        counter = $('.counter').FlipClock(3, {clockFace: 'MinuteCounter', countdown: true, hideLabels: "true",autoStart:true,
+        counter = $('.counter').FlipClock(0, {clockFace: 'MinuteCounter', countdown: true, hideLabels: "true",autoStart:false,
             callbacks:{stop:function(){
                 if(isStarted){
                     var lResult=counterL.getTime().time;
