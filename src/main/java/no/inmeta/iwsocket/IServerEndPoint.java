@@ -42,14 +42,13 @@ public class IServerEndPoint {
                 return;
             }
         } else if (pathPrm.get("userAgent").contains("androidClient") && null != roomParticipant[0] &&
-                (null != roomParticipant || null == roomParticipant[1] || null == roomParticipant[2])) {
+                (  null == roomParticipant[1] || null == roomParticipant[2])) {
             String post = iSocketConnectionManager.updateRoom("main", sessionId, "addMc");
             session.getUserProperties().put("pp", post);
             session.getUserProperties().put("roomName", "main");
             Set<Session> sessions = session.getOpenSessions();
             Session[] sesArr = sessions.toArray(new Session[3]);
             if (null != sesArr[1] && null != sesArr[2]) {
-
                 byte[] fpPic = iSocketConnectionManager.getPicBytes(firstPlayer);
                 byte[] spPic = iSocketConnectionManager.getPicBytes(secondPlayer);
                 try {
@@ -63,9 +62,13 @@ public class IServerEndPoint {
                     }
                     PicFbo picFboF = new PicFbo().setUserName(firstPlayer).setB64(iwMessageEcoder.toB64(fpPic)).setPos("f").setStat(firsJSObject.toString());
                     PicFbo picFboS = new PicFbo().setUserName(secondPlayer).setB64(iwMessageEcoder.toB64(spPic)).setPos("s").setStat(secondJSObject.toString());
+                    for (Session s:sesArr) {
+                        if (s.getUserProperties().get("roomManager").equals("yes")) {
+                            s.getBasicRemote().sendObject(iwMessageEcoder.jsonify(picFboF));
+                            s.getBasicRemote().sendObject(iwMessageEcoder.jsonify(picFboS));
+                        }
+                    }
 
-                    sesArr[0].getBasicRemote().sendObject(iwMessageEcoder.jsonify(picFboF));
-                    sesArr[0].getBasicRemote().sendObject(iwMessageEcoder.jsonify(picFboS));
                     sesArr[1].getUserProperties().put("userName", firstPlayer);
                     sesArr[2].getUserProperties().put("userName", secondPlayer);
                 } catch (EncodeException e) {
@@ -77,17 +80,17 @@ public class IServerEndPoint {
             session.close();
             return;
         }
-        session.getUserProperties().put("roomName", "main");
+
     }
 
     @OnClose
     public void onClose(Session session) {
 
-        try {
+    /*    try {
             killCon(session);
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
 
     }
 

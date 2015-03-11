@@ -128,8 +128,8 @@
         $('.playerImg').css({"width": (width - 50) / 4, "height": (height / 2), "marginLeft": (width - 50) / 9})
         var counterWidth = ((width - 100) / 4);
 
-        counterL = $('.counterL').FlipClock(2,{clockFace: 'Counter' });
-        counterR = $('.counterR').FlipClock(3 , {clockFace: 'Counter' });
+        counterL = $('.counterL').FlipClock(0,{clockFace: 'Counter' });
+        counterR = $('.counterR').FlipClock(0, {clockFace: 'Counter' });
         counter = $('.counter').FlipClock(0, {clockFace: 'MinuteCounter', countdown: true, hideLabels: "true",autoStart:false,
             callbacks:{stop:function(){
                 if(isStarted){
