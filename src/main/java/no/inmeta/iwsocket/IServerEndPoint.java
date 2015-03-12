@@ -13,6 +13,7 @@ import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -30,25 +31,30 @@ public class IServerEndPoint {
          Map<String, String> pathPrm = session.getPathParameters();
         String firstPlayer = pathPrm.get("first");
         String secondPlayer = pathPrm.get("second");
-        String sessionId = session.getId();
+
         String roomParticipant[] = iSocketConnectionManager.getRoomById("main");
         if (pathPrm.get("userAgent").contains("browserClient")) {
             if (null == roomParticipant || null == roomParticipant[0] || "".equals(roomParticipant[0])) {
+                String sessionId = session.getId();
                 session.getUserProperties().put("roomName", "main");
                 session.getUserProperties().put("roomManager", "yes");
                 iSocketConnectionManager.initRoom(sessionId, "main");
+                logger.log(Level.INFO,"browser connection opened "+sessionId +": user properties"+ session.getUserProperties().get("roomManager") );
             } else {
                 session.close();
                 return;
             }
         } else if (pathPrm.get("userAgent").contains("androidClient") && null != roomParticipant[0] &&
                 (  null == roomParticipant[1] || null == roomParticipant[2])) {
+            String sessionId = session.getId();
+            logger.log(Level.INFO,"mobile client connected: "+sessionId + "names:" + firstPlayer + ":" + secondPlayer);
             String post = iSocketConnectionManager.updateRoom("main", sessionId, "addMc");
             session.getUserProperties().put("pp", post);
             session.getUserProperties().put("roomName", "main");
             Set<Session> sessions = session.getOpenSessions();
             Session[] sesArr = sessions.toArray(new Session[3]);
             if (null != sesArr[1] && null != sesArr[2]) {
+                logger.log(Level.INFO,"ses arr 1 2 is not null");
                 sesArr[1].getUserProperties().put("roomManager", "no");
                 sesArr[2].getUserProperties().put("roomManager","no");
                 sesArr[1].getUserProperties().put("userName", firstPlayer);
@@ -69,8 +75,10 @@ public class IServerEndPoint {
                     for (Session s:sesArr) {
                         String str= (String) s.getUserProperties().get("roomManager");
                         if (null != str && str.equals("yes")) {
+                            logger.log(Level.INFO,"before pic send");
                             s.getBasicRemote().sendObject(iwMessageEcoder.jsonify(picFboF));
                             s.getBasicRemote().sendObject(iwMessageEcoder.jsonify(picFboS));
+                            logger.log(Level.INFO," pic sended");
                         }
                     }
 
@@ -89,7 +97,7 @@ public class IServerEndPoint {
 
     @OnClose
     public void onClose(Session session) {
-
+logger.log(Level.INFO,"onclose"+session.getId());
     /*    try {
             killCon(session);
         } catch (IOException e) {

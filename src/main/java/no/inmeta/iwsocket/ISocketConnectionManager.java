@@ -6,6 +6,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -31,6 +32,7 @@ public class ISocketConnectionManager {
         //list.put(sId,iClientFbo);
 
         roomList.put(roomid, new String[]{sIdf, null, null});
+        logger.log(Level.INFO,"room init*******");
     }
 
     public static Map<String, String[]> getRoomList() {
@@ -43,18 +45,21 @@ public class ISocketConnectionManager {
         if (type.equals("addMc")) {
             if (null == roomList.get(roomName)[1] || roomList.get(roomName)[1].equals("")) {
                 roomList.get(roomName)[1] = sessionId;
+                logger.log(Level.INFO,"added to room place 1");
                 return "l:";
             } else {
                 roomList.get(roomName)[2] = sessionId;
+                logger.log(Level.INFO,"added to room place 2");
                 return "r:";
             }
         } else if (type.equals("addBc")) {
             roomList.get(roomName)[0] = sessionId;
+            logger.log(Level.INFO,"added bc #########");
             return "bc added";
         } else if (type.equals("remove")) {
             String[] clients = roomList.get(roomName);
-
             roomList.remove("main");
+            logger.log(Level.INFO,"removed room");
             initRoom(clients[0],"main");
             return "list cleared";
         }
@@ -88,6 +93,7 @@ public class ISocketConnectionManager {
 
     public byte[] getPicBytes(String s) throws IOException {
         URL picUrl=getClass().getClassLoader().getResource("employeeimages" + File.separator + s.toLowerCase() + ".jpg");
+        logger.log(Level.INFO,s+" pic search...");
         byte[] tmp;
         if (null != picUrl ) {
             File fnew = new File(picUrl.getFile());
