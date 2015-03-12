@@ -24,14 +24,15 @@
     ws.onmessage = function (evt) {
 
         var received_msg = evt.data;
-        console.log("message:", received_msg);
+
         var jsonson= undefined;
-         if(received_msg.length > 30 && received_msg.indexOf("b64")>-1) {
+         if( received_msg.indexOf("b64") > -1) {
              jsonson =JSON.parse(received_msg);
+             console.log("jsonson", jsonson);
          }
 
         if (  undefined != jsonson && undefined != jsonson.userName ) {
-            var picfbo={userName:"",b64:"",player:"",pos:"",stats:""}
+            var picfbo={userName:"",b64:"",player:"",pos:"",stat:""}
 
             picfbo.userName = jsonson.userName;
             picfbo.b64 = jsonson.b64;
@@ -39,14 +40,10 @@
             if(picfbo.pos === "f") {
                 $("#fPlayerName").text(picfbo.userName);
                 document.getElementById("player1Img").src = picfbo.b64;
-                statF=picfbo.stats;
-                console.log("stats",statF);
             }
             else {
                 $("#sPlayerName").text(picfbo.userName);
                 document.getElementById("player2Img").src = picfbo.b64;
-                statS=picfbo.stats;
-                console.log("stats",statS);
             }
         } else {
             if (received_msg.indexOf("inc") > -1) {
@@ -69,10 +66,12 @@
                         $('.drawerNameL').css({"visibility": "hidden"});
                         $('.statL').css({"visibility": "hidden"});
 
+
                     } else {
                         $('#leftDrawer').css({"width": ((width - 150) / 3), "height": ( height - 50), "visibility": "visible"  }).animate({width: width / 3}, "slow")
                         $('.drawerNameL').css({"visibility": "visible", "color": "white", "marginLeft": (width - 150) / 7});
                         $('.statL').css({"visibility": "visible", "color": "white", "marginLeft": 50 });
+
                     }
                 }
                 else {

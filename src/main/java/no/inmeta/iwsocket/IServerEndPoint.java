@@ -4,7 +4,11 @@ package no.inmeta.iwsocket;
 import org.json.simple.JSONObject;
 import org.lightcouch.CouchDbClient;
 
-import javax.websocket.*;
+import javax.websocket.EncodeException;
+import javax.websocket.OnClose;
+import javax.websocket.OnMessage;
+import javax.websocket.OnOpen;
+import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
 import java.util.Map;
@@ -23,20 +27,16 @@ public class IServerEndPoint {
 
     @OnOpen
     public void onOpen(Session session) throws IOException {
-        //  session.getUserProperties().put("chatroom","chatroom");
-        Map<String, String> pathPrm = session.getPathParameters();
+         Map<String, String> pathPrm = session.getPathParameters();
         String firstPlayer = pathPrm.get("first");
         String secondPlayer = pathPrm.get("second");
-        String roomId = firstPlayer + "&" + secondPlayer;
         String sessionId = session.getId();
         String roomParticipant[] = iSocketConnectionManager.getRoomById("main");
-        // Response response=dbClient.save(new JsonParser().parse("{\"udidit\":\"true\"}").getAsJsonObject());
         if (pathPrm.get("userAgent").contains("browserClient")) {
             if (null == roomParticipant || null == roomParticipant[0] || "".equals(roomParticipant[0])) {
                 session.getUserProperties().put("roomName", "main");
                 session.getUserProperties().put("roomManager", "yes");
                 iSocketConnectionManager.initRoom(sessionId, "main");
-
             } else {
                 session.close();
                 return;
@@ -48,11 +48,11 @@ public class IServerEndPoint {
             session.getUserProperties().put("roomName", "main");
             Set<Session> sessions = session.getOpenSessions();
             Session[] sesArr = sessions.toArray(new Session[3]);
-            sesArr[1].getUserProperties().put("userName", firstPlayer);
-            sesArr[2].getUserProperties().put("userName", secondPlayer);
-            sesArr[1].getUserProperties().put("roomManager", "no");
-            sesArr[2].getUserProperties().put("roomManager","no");
             if (null != sesArr[1] && null != sesArr[2]) {
+                sesArr[1].getUserProperties().put("roomManager", "no");
+                sesArr[2].getUserProperties().put("roomManager","no");
+                sesArr[1].getUserProperties().put("userName", firstPlayer);
+                sesArr[2].getUserProperties().put("userName", secondPlayer);
                 byte[] fpPic = iSocketConnectionManager.getPicBytes(firstPlayer);
                 byte[] spPic = iSocketConnectionManager.getPicBytes(secondPlayer);
                 try {
@@ -62,7 +62,7 @@ public class IServerEndPoint {
                          firsJSObject = dbClient.find(JSONObject.class, firstPlayer);
                     }
                     if (dbClient.contains(secondPlayer)) {
-                          secondJSObject = dbClient.find(JSONObject.class, firstPlayer);
+                          secondJSObject = dbClient.find(JSONObject.class, secondPlayer);
                     }
                     PicFbo picFboF = new PicFbo().setUserName(firstPlayer).setB64(iwMessageEcoder.toB64(fpPic)).setPos("f").setStat(firsJSObject.toString());
                     PicFbo picFboS = new PicFbo().setUserName(secondPlayer).setB64(iwMessageEcoder.toB64(spPic)).setPos("s").setStat(secondJSObject.toString());
@@ -140,7 +140,7 @@ public class IServerEndPoint {
     private void killCon(Session session) throws IOException {
         for (Session s : session.getOpenSessions()) {
             String isManager = (String) s.getUserProperties().get("roomManager");
-            if (s.isOpen() && isManager.equals("no")) {
+            if (s.isOpen() && (null == isManager ||isManager.equals("no"))) {
                 s.close();
                 iSocketConnectionManager.updateRoom("main", s.getId(), "remove");
             }
