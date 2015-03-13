@@ -118,10 +118,16 @@ public class ISocketConnectionManager {
 
     public boolean isRoomReady() {
         String[] clients=roomList.get("main");
-        for (int i=0;i<clients.length;i++){
-            if (null==clients[i])
-                return false;
-        }
-        return true;
+
+            if (null!=clients[1])
+                return true;
+
+        return false;
+    }
+    public boolean isTherePlace() {
+        String[] clients=roomList.get("main");
+        if (null == clients[1] || null == clients[2])
+            return true;
+        return false;
     }
 }

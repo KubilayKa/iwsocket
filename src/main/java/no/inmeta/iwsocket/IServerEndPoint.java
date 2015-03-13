@@ -12,7 +12,6 @@ import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -43,7 +42,7 @@ public class IServerEndPoint {
                 session.close();
                 return;
             }
-        } else if (pathPrm.get("userAgent").contains("androidClient") && !iSocketConnectionManager.isRoomReady()) {
+        } else if (pathPrm.get("userAgent").contains("androidClient") && iSocketConnectionManager.isTherePlace()) {
             String sessionId = session.getId();
             String post;
             logger.log(Level.WARNING, "mobile client connected: " + sessionId + "names:" + firstPlayer + ":" + secondPlayer);
@@ -54,8 +53,7 @@ public class IServerEndPoint {
             }
             session.getUserProperties().put("pp", post);
             session.getUserProperties().put("roomName", "main");
-
-            if (iSocketConnectionManager.isRoomReady()) {
+            if (post.equals("l:")) {
                 logger.log(Level.WARNING, "ses arr 1 2 is not null");
                 byte[] fpPic = iSocketConnectionManager.getPicBytes(firstPlayer);
                 byte[] spPic = iSocketConnectionManager.getPicBytes(secondPlayer);
