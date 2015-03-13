@@ -1,5 +1,6 @@
 package no.inmeta.iwsocket;
 
+import javax.websocket.Session;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -17,6 +18,15 @@ public class ISocketConnectionManager {
 
     private final Logger logger = Logger.getLogger("AISCLI");
     private final static ISocketConnectionManager iSocketConnectionManager = new ISocketConnectionManager();
+    private Session mainSession;
+
+    public Session getMainSession() {
+        return mainSession;
+    }
+
+    public void setMainSession(Session mainSession) {
+        this.mainSession = mainSession;
+    }
 
     private ISocketConnectionManager() {
     }
@@ -28,11 +38,10 @@ public class ISocketConnectionManager {
 
     private final Map<String, IClientFbo> list = new HashMap<>();
 
-    public void initRoom(String sIdf, String roomid) {
-        //list.put(sId,iClientFbo);
-
+    public void initRoom(String sIdf, String roomid,Session session) {
+        mainSession=session;
         roomList.put(roomid, new String[]{sIdf, null, null});
-        logger.log(Level.INFO,"room init*******");
+        logger.log(Level.WARNING,"room init*******");
     }
 
     public static Map<String, String[]> getRoomList() {
@@ -41,26 +50,25 @@ public class ISocketConnectionManager {
     }
 
 
-    public String updateRoom(String roomName, String sessionId, String type) {
+    public String updateRoom(String roomName, String sessionId, String type,String place) {
         if (type.equals("addMc")) {
-            if (null == roomList.get(roomName)[1] || roomList.get(roomName)[1].equals("")) {
+            if (null != place && "first".equals(place)) {
                 roomList.get(roomName)[1] = sessionId;
-                logger.log(Level.INFO,"added to room place 1");
+                logger.log(Level.WARNING,"added to room place 1");
                 return "l:";
             } else {
                 roomList.get(roomName)[2] = sessionId;
-                logger.log(Level.INFO,"added to room place 2");
+                logger.log(Level.WARNING,"added to room place 2");
                 return "r:";
             }
         } else if (type.equals("addBc")) {
             roomList.get(roomName)[0] = sessionId;
-            logger.log(Level.INFO,"added bc #########");
+            logger.log(Level.WARNING,"added bc #########");
             return "bc added";
         } else if (type.equals("remove")) {
-            String[] clients = roomList.get(roomName);
             roomList.remove("main");
-            logger.log(Level.INFO,"removed room");
-            initRoom(clients[0],"main");
+            logger.log(Level.WARNING,"removed room");
+            initRoom(mainSession.getId(),"main",mainSession);
             return "list cleared";
         }
         return "unknown operation";
@@ -93,7 +101,7 @@ public class ISocketConnectionManager {
 
     public byte[] getPicBytes(String s) throws IOException {
         URL picUrl=getClass().getClassLoader().getResource("employeeimages" + File.separator + s.toLowerCase() + ".jpg");
-        logger.log(Level.INFO,s+" pic search...");
+        logger.log(Level.WARNING,s+" pic search...");
         byte[] tmp;
         if (null != picUrl ) {
             File fnew = new File(picUrl.getFile());
@@ -103,5 +111,15 @@ public class ISocketConnectionManager {
             tmp = Files.readAllBytes(unkn.toPath());
         }
         return tmp;
+    }
+
+
+    public boolean isRoomReady() {
+        String[] clients=roomList.get("main");
+        for (int i=0;i<clients.length;i++){
+            if (null==clients[i])
+                return false;
+        }
+        return true;
     }
 }

@@ -142,7 +142,7 @@
             },start:function(){isStarted=true;}}});
         var fCSize = $('.flip-clock-wrapper').width();
         var pad = ((width - 50) / 2) / 4;
-        var centerPad = ((width - fCSize) / 2) + 20;
+        var centerPad = ((width - fCSize) / 2) + 30;
         $('.counterL').css({"left": pad});
         $('.counterR').css({"left": pad});
         $('.counter').css({"left": centerPad})
