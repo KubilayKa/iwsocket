@@ -46,24 +46,17 @@ public class IServerEndPoint {
         } else if (pathPrm.get("userAgent").contains("androidClient") && !iSocketConnectionManager.isRoomReady()) {
             String sessionId = session.getId();
             String post;
+            logger.log(Level.WARNING, "mobile client connected: " + sessionId + "names:" + firstPlayer + ":" + secondPlayer);
             if (secondPlayer.equals("UnknownUser")) {
                 post = iSocketConnectionManager.updateRoom("main", sessionId, "addMc", "second");
             } else {
                 post = iSocketConnectionManager.updateRoom("main", sessionId, "addMc", "first");
             }
-
-            logger.log(Level.WARNING, "mobile client connected: " + sessionId + "names:" + firstPlayer + ":" + secondPlayer);
-
             session.getUserProperties().put("pp", post);
             session.getUserProperties().put("roomName", "main");
-            Set<Session> sessions = session.getOpenSessions();
-            Session[] sesArr = sessions.toArray(new Session[3]);
+
             if (iSocketConnectionManager.isRoomReady()) {
                 logger.log(Level.WARNING, "ses arr 1 2 is not null");
-                sesArr[1].getUserProperties().put("roomManager", "no");
-                sesArr[2].getUserProperties().put("roomManager", "no");
-                sesArr[1].getUserProperties().put("userName", firstPlayer);
-                sesArr[2].getUserProperties().put("userName", secondPlayer);
                 byte[] fpPic = iSocketConnectionManager.getPicBytes(firstPlayer);
                 byte[] spPic = iSocketConnectionManager.getPicBytes(secondPlayer);
                 try {

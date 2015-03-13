@@ -49,7 +49,9 @@ public class ISocketConnectionManager {
         return listCopy;
     }
 
-
+   public String getPlayer(int i) {
+       return roomList.get("main")[i];
+   }
     public String updateRoom(String roomName, String sessionId, String type,String place) {
         if (type.equals("addMc")) {
             if (null != place && "first".equals(place)) {
