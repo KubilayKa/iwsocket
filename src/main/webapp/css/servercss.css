@@ -57,7 +57,10 @@ body {
     }
 .statL , .statR {
     font-size: 25px;
-    padding-top: 10px;
+
+    }
+#leftTable,#rightTable {
+    margin-left: 40px;
     }
 #nameOfTheGame {
     text-shadow: 0px -2px 1px rgba(135, 135, 135, 1);
@@ -114,5 +117,7 @@ body {
 .flip-clock-divider  {
     visibility: hidden;
     }
-
+.resB {
+  text-align: center;
+    }
 

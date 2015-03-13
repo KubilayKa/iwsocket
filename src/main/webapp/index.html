@@ -10,17 +10,24 @@
 <body onload="screenResize()" id="mainBody">
 <div id="leftDrawer">
     <h1 class="drawerNameL">STATS</h1>
-    <p class="statL">Won:<b id="lWon">&nbsp;&nbsp;&nbsp;&nbsp;0 </b></p>
-    <p class="statL">Lost:<b id="lLost"> &nbsp;&nbsp;&nbsp;&nbsp;0</b></p>
-    <p class="statL">Draw:<b id="lDraw">&nbsp;&nbsp;&nbsp;&nbsp; 0</b></p>
-    <p class="statL">Points:<b id="lPoints">&nbsp;&nbsp;&nbsp;&nbsp; 0</b></p>
+
+    <table id="leftTable" cellspacing="20">
+        <tr class="statL"> <td >Won:</td>     <td id="lWon" class="resB"> 0 </td></tr>
+        <tr class="statL"> <td >Lost:</td>    <td id="lLost" class="resB"> 0</td></tr>
+        <tr class="statL"> <td >Draw:</td>    <td id="lDraw" class="resB">  0</td></tr>
+        <tr class="statL"> <td >Points:</td>  <td id="lPoints" class="resB"> 0</td></tr>
+    </table>
+
 </div>
 <div id="rightDrawer">
     <h1 class="drawerNameR">STATS</h1>
-    <p class="statR">Won:<b id="rWon">&nbsp;&nbsp;&nbsp;&nbsp;0</b></p>
-    <p class="statR">Lost:<b id="rLost">&nbsp;&nbsp;&nbsp;&nbsp;0 </b></p>
-    <p class="statR">Draw:<b id="rDraw">&nbsp;&nbsp;&nbsp;&nbsp;0 </b></p>
-    <p class="statR">Points:<b id="rPoints">&nbsp;&nbsp;&nbsp;&nbsp; 0</b></p>
+
+    <table id="rightTable">
+        <tr class="statR"> <td>Won:</td>        <td  id="rWon" class="resB"> 0 </td> </tr>
+        <tr class="statR"> <td>Lost:</td>        <td  id="rLost" class="resB"> 0 </td> </tr>
+        <tr class="statR"> <td>Draw:</td>        <td  id="rDraw" class="resB"> 0</td> </tr>
+        <tr class="statR"> <td>Points:</td>      <td  id="rPoints" class="resB"> 0</td> </tr>
+    </table>
 </div>
 
 <div id="pageWrapper">

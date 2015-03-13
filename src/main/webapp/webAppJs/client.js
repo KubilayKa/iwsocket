@@ -40,10 +40,15 @@
             if(picfbo.pos === "f") {
                 $("#fPlayerName").text(picfbo.userName);
                 document.getElementById("player1Img").src = picfbo.b64;
+                statF = JSON.parse(jsonson.stat);
+                console.log("jsonson:",statF)
             }
             else {
                 $("#sPlayerName").text(picfbo.userName);
                 document.getElementById("player2Img").src = picfbo.b64;
+                statS = JSON.parse(jsonson.stat);
+                console.log("jsonson:",statF)
+
             }
         } else {
             if (received_msg.indexOf("inc") > -1) {
@@ -65,13 +70,14 @@
                         $('#leftDrawer').css({"width": ((width - 150) / 3), "height": ( height - 50)  }).animate({width: '0px', visibility: "hidden" }, "slow");
                         $('.drawerNameL').css({"visibility": "hidden"});
                         $('.statL').css({"visibility": "hidden"});
-
-
                     } else {
                         $('#leftDrawer').css({"width": ((width - 150) / 3), "height": ( height - 50), "visibility": "visible"  }).animate({width: width / 3}, "slow")
                         $('.drawerNameL').css({"visibility": "visible", "color": "white", "marginLeft": (width - 150) / 7});
                         $('.statL').css({"visibility": "visible", "color": "white", "marginLeft": 50 });
-
+                        $('#lWon').text(statF.win);
+                        $('#lScore').text(statF.score);
+                        $('#lLost').text(statF.lost);
+                        $('#lDraw').text(statF.draw);
                     }
                 }
                 else {
@@ -83,6 +89,10 @@
                         $('#rightDrawer').css({"width": ((width - 150) / 3), "height": ( height - 50), "visibility": "visible"  }).animate({width: width / 3}, "slow")
                         $('.drawerNameR').css({"visibility": "visible", "color": "white", "marginLeft": (width - 150) / 7});
                         $('.statR').css({"visibility": "visible", "color": "white","marginLeft": 50  });
+                        $('#rWon').text(statS.win);
+                        $('#rScore').text(statS.score);
+                        $('#rLost').text(statS.lost);
+                        $('#rDraw').text(statS.draw);
                     }
                 }
 
